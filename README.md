@@ -2,6 +2,8 @@
 
 Python library for pricing financial derivatives. Course project for *Asset Pricing Fundamentals* and *Interest Rate Models*.
 
+**We use Python 3.13.** Declare `requires-python = "==3.13.*"` in `pyproject.toml`.
+
 ## Goal
 You will build your own pricing library incrementally, adding new derivatives and models in each assignment, following good software engineering practices.
 
@@ -176,7 +178,7 @@ name = "pricing_hesperides"
 version = "0.1.0"
 description = "Library for asset pricing"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = "==3.13.*"
 dependencies = ["numpy>=2.0.0"]  # Runtime dependencies. Needed to run use the library after install.
 
 # Optional dependency groups (pip install .[dev])
@@ -197,13 +199,13 @@ From the project root, run the following in order:
 - Run tests.
 
    ```bash
-   python -m venv .venv-wheel
+   py -3.13 -m venv .venv-wheel
    .venv-wheel\Scripts\activate
    python -m pip install -U pip build
    python -m build --wheel
-   pip install dist/pricing_hesperides-0.1.0-py3-none-any.whl
-   pip install .[dev]
-   pytest
+   python -m pip install dist/pricing_hesperides-0.1.0-py3-none-any.whl
+   python -m pip install .[dev]
+   python -m pytest
    ```
 ### Grading Process
 
