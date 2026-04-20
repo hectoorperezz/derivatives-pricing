@@ -7,6 +7,6 @@ class Pricer(ABC):
     """Base class for all pricers."""
 
     @abstractmethod
-    def price(self, St: float) -> float:
+    def price(self) -> float:
         """Compute the price of the instrument."""
         ...

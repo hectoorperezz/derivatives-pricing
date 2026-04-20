@@ -1,11 +1,11 @@
 # hesperides/models/binomial.py
 
 from dataclasses import dataclass
-from hesperides.models.base import Model
 from hesperides.market.base import DiscountCurve
 
+
 @dataclass(frozen=True)
-class BinomialModel(Model):
+class BinomialModel:
     """Binomial tree model. Defines up/down factors and risk-neutral dynamics."""
 
     u: float

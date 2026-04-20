@@ -1,7 +1,10 @@
 # hesperides/api.py
 
+__all__ = ["get_price_binomial_european"]
+
 from hesperides.contracts.european import EuropeanOption
 from hesperides.market.curves import FlatDiscountCurve
+from hesperides.market.data import MarketData
 from hesperides.models.binomial import BinomialModel
 from hesperides.engines.binomial_engine import AnalyticBinomialEngine
 from hesperides.pricers.european_pricer import EuropeanPricer
@@ -18,9 +21,9 @@ def get_price_binomial_european(
 ) -> float:
     """Price a European call or put option using the binomial model."""
     contract = EuropeanOption(K=K, expiry=T, call=call)
-    curve = FlatDiscountCurve(R=R)
+    market = MarketData(spot=St, curve=FlatDiscountCurve(R=R))
     model = BinomialModel(u=u, d=d)
     engine = AnalyticBinomialEngine()
-    pricer = EuropeanPricer(contract, model, curve, engine)
+    pricer = EuropeanPricer(contract, model, market, engine)
 
-    return pricer.price(St)
+    return pricer.price()
