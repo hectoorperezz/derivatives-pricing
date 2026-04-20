@@ -2,7 +2,7 @@
 
 ## Objective
 
-Implement pricing of **European call** and **European put** options using a **binomial tree model**. Your solution must follow the modular architecture described in the [main README](../../README.md) and expose the required functions through the single public interface `hesperides/api.py`.
+Implement pricing of **European call** and **European put** options using a **binomial tree model**. Your solution must follow the modular architecture described in the [main README](../README.md) and expose the required functions through the single public interface `hesperides/api.py`.
 
 ---
 
@@ -60,7 +60,7 @@ def get_price_binomial_european(
 
 ## Requirements
 
-- Do not forget to follow the modular architecture and the single public interface rules stated in the [main README](../../README.md).
+- Do not forget to follow the modular architecture and the single public interface rules stated in the [main README](../README.md).
 
 - For this assignment, note that for a fixed time you do not need an explicit Python loop over tree nodes to perform backward induction. **This can be implemented with NumPy array operations.**
 - For this particular case, the risk-free rate is a constant. This will not always be the case, so you should not hardcode it. It is highly recommended to implement a **FlatDiscountCurve** class (or similar) in the module where all the curves are defined.
@@ -71,13 +71,13 @@ def get_price_binomial_european(
 
 ## Submission Checklist
 
-Before submitting, verify the instructions in the [main README](../../README.md).
+Before submitting, verify the instructions in the [main README](../README.md).
 
 In addition, you must verify that the following tests, to be included in your library, pass:
 
-- [test_binomial_european.py](../../public_tests/test_binomial_european.py) 
+- [test_binomial_european.py](../public_tests/test_binomial_european.py) 
 
 ## References
 
-- [Main project README](../../README.md)
+- [Main project README](../README.md)
 
