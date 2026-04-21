@@ -12,7 +12,7 @@ from hesperides.market.call_surface import CallSurface
 from hesperides.market.curves import FlatDiscountCurve
 from hesperides.market.data import MarketData
 from hesperides.models.binomial import BinomialModel
-from hesperides.engines.binomial_engine import AnalyticBinomialEngine
+from hesperides.engines.binomial_engine import BinomialTreeEngine
 from hesperides.pricers.european_pricer import EuropeanPricer
 
 
@@ -29,7 +29,7 @@ def get_price_binomial_european(
     contract = EuropeanOption(K=K, expiry=T, call=call)
     market = MarketData(spot=St, curve=FlatDiscountCurve(R=R))
     model = BinomialModel(u=u, d=d)
-    engine = AnalyticBinomialEngine()
+    engine = BinomialTreeEngine()
     pricer = EuropeanPricer(contract, model, market, engine)
 
     return pricer.price()
