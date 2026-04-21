@@ -29,7 +29,7 @@ class CallSurface:
             raise ValueError("Strikes must be strictly increasing.")
 
     def vertical_spreads(self) -> NDArray[np.float64]:
-        """Normalized vertical call spreads (Carr-Madan 2005, eq. 1).
+        """Normalized vertical call spreads.
 
         Q_bar_{i,j} = (C_{i-1,j} - C_{i,j}) / (K_i - K_{i-1}) for i > 0.
         Returns array of shape (nK - 1, nT).
@@ -39,7 +39,7 @@ class CallSurface:
         return -np.diff(self.prices, axis=0) / np.diff(self.strikes)[:, None]
 
     def butterfly_values(self) -> NDArray[np.float64]:
-        """Interior butterfly spread values (Carr-Madan 2005, after eq. 1).
+        """Interior butterfly spread values.
 
         BS_{i,j} = C_{i-1,j}
                  - (K_{i+1} - K_{i-1})/(K_{i+1} - K_i) * C_{i,j}
@@ -59,7 +59,7 @@ class CallSurface:
         )
 
     def calendar_spreads(self) -> NDArray[np.float64]:
-        """Calendar spreads across consecutive expiries (Carr-Madan 2005, eq. 4).
+        """Calendar spreads across consecutive expiries.
 
         CS_{i,j} = C_{i,j+1} - C_{i,j}. Returns array of shape (nK, nT - 1).
         """
