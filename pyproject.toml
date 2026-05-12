@@ -12,6 +12,14 @@ dependencies = ["numpy>=2.0.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.2", "pytest-timeout>=2.2", "build>=1.2"]
+docs = [
+    "sphinx>=8",
+    "furo>=2024.8.6",
+    "myst-parser>=4",
+    "sphinx-autodoc-typehints>=2",
+    "sphinx-copybutton>=0.5",
+    "sphinx-design>=0.6",
+]
 
 [tool.setuptools.packages.find]
 include = ["hesperides*"]

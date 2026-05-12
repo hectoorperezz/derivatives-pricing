@@ -1,0 +1,657 @@
+/* =============================================================
+   Hesperides — Vercel/Apple style overrides for Furo
+   ============================================================= */
+
+:root {
+  /* Paleta exacta de los apuntes de Universidad de las Hespérides */
+  --hesperides-gold:        #FFCD00;  /* hesperidesyellow */
+  --hesperides-gold-soft:   #FFD940;
+  --hesperides-gold-deep:   #B38F00;  /* darkyellow */
+  --hesperides-gold-faint:  #FFF7D6;  /* lightyellow */
+  --hesperides-gold-glow:   rgba(255, 205, 0, 0.22);
+  --hesperides-lightgray:   #F0F0F0;
+  --hesperides-darkgray:    #595959;
+
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ----- Typography --------------------------------------------- */
+html {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-size: 15.5px;
+  letter-spacing: -0.011em;
+  line-height: 1.65;
+}
+
+/* ----- Content top spacing ----------------------------------- */
+/* Furo applies `padding: 0 3em` to .content (no top padding), which leaves
+   page titles pinned to the sticky header. Add comfortable top spacing. */
+.content {
+  padding-top: 2.5rem !important;
+  padding-bottom: 3rem !important;
+}
+@media (max-width: 67em) {
+  .content {
+    padding-top: 1.5rem !important;
+  }
+}
+
+article h1, article h2, article h3, article h4, article h5, article h6 {
+  font-family: var(--font-stack);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+article h1 { font-size: 2.25rem; margin-top: 0; margin-bottom: 1.5rem; }
+article h2 {
+  font-size: 1.45rem;
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-background-border);
+}
+article h3 { font-size: 1.15rem; margin-top: 2rem; }
+article h4 { font-size: 1rem; }
+
+/* Body links: dark text with permanent thin yellow underline that grows on hover */
+article p a,
+article li a,
+article td a {
+  color: var(--color-foreground-primary);
+  font-weight: 600;
+  text-decoration: none;
+  background-image: linear-gradient(var(--hesperides-gold), var(--hesperides-gold));
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  transition: background-size 200ms var(--ease-out-quad);
+  padding-bottom: 1px;
+}
+article p a:hover,
+article li a:hover,
+article td a:hover {
+  background-size: 100% 100%;
+  color: #1a1300;
+}
+
+/* ----- Hide duplicate H1 on hero pages ----------------------- */
+/* The .rst section adds an <h1> automatically; on pages with the
+   hero we render our own bigger title inside the hero. */
+article > section > h1:has(+ .hesperides-hero) {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ----- Hero --------------------------------------------------- */
+.hesperides-hero {
+  padding: 0.5rem 0 2.5rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--color-background-border);
+}
+.hesperides-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a1300;  /* dark text on light yellow — apuntes style */
+  background: var(--hesperides-gold-faint);
+  border: 1.5px solid var(--hesperides-gold);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  margin-bottom: 1.5rem;
+}
+[data-theme="dark"] .hesperides-eyebrow {
+  color: var(--hesperides-gold);
+  background: rgba(255, 205, 0, 0.08);
+}
+.hesperides-eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--hesperides-gold);
+  box-shadow: 0 0 8px var(--hesperides-gold-glow);
+}
+.hesperides-title {
+  font-size: clamp(2.5rem, 5vw, 3.75rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1 !important;
+  margin: 0 0 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--color-foreground-primary) 0%,
+    var(--hesperides-gold) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="dark"] .hesperides-title {
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    var(--hesperides-gold) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hesperides-tagline {
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--color-foreground-secondary);
+  max-width: 42rem;
+  margin: 0 0 1.75rem;
+}
+.hesperides-cta-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ----- Hero buttons ------------------------------------------ */
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  transition: all 180ms var(--ease-out-quad);
+  background-image: none !important;
+  background-size: 0 !important;
+  border: 1px solid transparent;
+}
+.hero-cta--primary {
+  background: var(--hesperides-gold) !important;
+  color: #1a1300 !important;
+  border-color: var(--hesperides-gold);
+}
+.hero-cta--primary:hover {
+  background: var(--hesperides-gold-soft) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--hesperides-gold-glow);
+}
+.hero-cta--ghost {
+  background: transparent !important;
+  color: var(--color-foreground-primary) !important;
+  border-color: var(--color-background-border);
+}
+.hero-cta--ghost:hover {
+  border-color: var(--color-foreground-muted);
+  background: var(--color-background-hover) !important;
+}
+
+/* ----- Sidebar ----------------------------------------------- */
+.sidebar-drawer {
+  border-right: 1px solid var(--color-sidebar-background-border);
+  box-shadow: none;
+}
+.sidebar-brand {
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--color-sidebar-background-border);
+}
+.sidebar-brand-text {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+  color: var(--color-foreground-primary);
+}
+.sidebar-tree {
+  font-size: 0.875rem;
+  padding: 0.75rem 1rem;
+}
+.sidebar-tree .caption {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-foreground-muted);
+  padding: 1.25rem 0.5rem 0.5rem;
+  margin-bottom: 0;
+}
+.sidebar-tree li > a.reference {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  transition: background 150ms var(--ease-out-quad), color 150ms var(--ease-out-quad);
+}
+.sidebar-tree li > a.reference:hover {
+  background: var(--color-background-hover);
+  color: var(--color-foreground-primary);
+}
+.sidebar-tree .current-page > .reference,
+.sidebar-tree li.current > a.reference {
+  background: var(--hesperides-gold-faint);
+  color: #1a1300;  /* dark text on light yellow — apuntes style */
+  font-weight: 700;
+}
+[data-theme="dark"] .sidebar-tree .current-page > .reference,
+[data-theme="dark"] .sidebar-tree li.current > a.reference {
+  color: var(--hesperides-gold);
+}
+
+/* ----- Inline code & blocks --------------------------------- */
+:not(pre) > code {
+  background: var(--color-inline-code-background);
+  border: 1px solid var(--color-background-border);
+  border-radius: 5px;
+  padding: 0.1em 0.4em;
+  font-size: 0.88em;
+  font-weight: 500;
+}
+
+.highlight {
+  border-radius: 10px;
+  border: 1px solid var(--color-background-border);
+  background: #fafafa !important;
+  margin: 1.25rem 0;
+  overflow: hidden;
+  position: relative;
+}
+[data-theme="dark"] .highlight {
+  background: #0d0d0d !important;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+.highlight pre {
+  padding: 1.1rem 1.25rem;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  background: transparent !important;
+}
+
+button.copybtn {
+  opacity: 0;
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-background-border);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  top: 0.5rem;
+  right: 0.5rem;
+  transition: all 150ms var(--ease-out-quad);
+}
+.highlight:hover button.copybtn { opacity: 1; }
+button.copybtn:hover {
+  border-color: var(--hesperides-gold);
+  color: #1a1300;
+  background: var(--hesperides-gold-faint);
+}
+
+/* ----- Admonitions ----------------------------------------- */
+.admonition,
+div.admonition {
+  border-radius: 10px;
+  border: 1px solid var(--color-background-border);
+  border-left-width: 3px;
+  box-shadow: none;
+  background: var(--color-admonition-background);
+  padding: 0.5rem 1.25rem;
+}
+.admonition.note,
+.admonition.seealso { border-left-color: var(--hesperides-gold); }
+.admonition.tip,
+.admonition.hint { border-left-color: #10b981; }
+.admonition.warning,
+.admonition.caution { border-left-color: #f59e0b; }
+.admonition.danger,
+.admonition.error { border-left-color: #ef4444; }
+
+/* Generic admonition titles (note/tip/warning/etc.) — EXCLUDE custom boxes. */
+.admonition:not(.defbox):not(.notbox):not(.exbox) > .admonition-title,
+.admonition:not(.defbox):not(.notbox):not(.exbox) > p.admonition-title {
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: transparent !important;
+  padding-left: 0 !important;
+}
+.admonition:not(.defbox):not(.notbox):not(.exbox) > .admonition-title::before {
+  display: none;
+}
+
+/* ----- API signatures --------------------------------------- */
+/* Furo uses a hanging-indent trick on .sig (padding-left: 3em + text-indent: -2.5em
+   plus negative horizontal margins). We re-style the box without breaking that. */
+dt.sig:not(.sig-inline) {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-background-border);
+  border-left: 3px solid var(--hesperides-gold);
+  border-radius: 8px;
+  /* Keep Furo's left-padding/text-indent for the hanging-indent of wrapped lines,
+     just round the box and add a touch of vertical air. */
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  padding-right: 0.95rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* "[fuente]" link: float right so it never gets in the way of the signature. */
+dt.sig:not(.sig-inline) > a.reference .viewcode-link {
+  float: right;
+  font-weight: 400;
+  font-size: 0.75rem;
+  opacity: 0.55;
+  margin-left: 0.5rem;
+}
+dt.sig:not(.sig-inline) > a.reference:hover .viewcode-link {
+  opacity: 1;
+}
+
+/* The "class " / "def " keyword */
+dt.sig:not(.sig-inline) .property {
+  color: var(--hesperides-gold);
+  font-weight: 700;
+}
+[data-theme="dark"] dt.sig:not(.sig-inline) .property {
+  color: var(--hesperides-gold);
+}
+
+/* Headerlink ¶ */
+dt.sig:not(.sig-inline) > a.headerlink {
+  opacity: 0;
+  margin-left: 0.35rem;
+}
+dt.sig:not(.sig-inline):hover > a.headerlink {
+  opacity: 0.5;
+}
+
+/* ----- Tables ----------------------------------------------- */
+table.docutils {
+  border: 1px solid var(--color-background-border);
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+}
+table.docutils th {
+  background: var(--color-background-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--color-foreground-muted);
+}
+table.docutils td, table.docutils th {
+  border: none;
+  border-bottom: 1px solid var(--color-background-border);
+  padding: 0.7rem 1rem;
+}
+
+/* ----- TOC right ------------------------------------------- */
+.toc-tree {
+  font-size: 0.82rem;
+}
+.toc-tree .caption-text {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-foreground-muted);
+}
+
+/* ----- sphinx-design cards --------------------------------- */
+.sd-card {
+  border-radius: 12px !important;
+  border: 1px solid var(--color-background-border) !important;
+  background: var(--color-background-primary) !important;
+  transition: transform 180ms var(--ease-out-quad),
+              border-color 180ms var(--ease-out-quad),
+              box-shadow 180ms var(--ease-out-quad);
+  box-shadow: none !important;
+}
+.sd-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--hesperides-gold) !important;
+  box-shadow: 0 12px 32px -16px var(--hesperides-gold-glow) !important;
+}
+.sd-card-title,
+.sd-card .sd-card-title {
+  font-weight: 700 !important;
+  letter-spacing: -0.015em;
+  font-size: 1.02rem !important;
+  margin-bottom: 0.5rem !important;
+}
+.sd-card-text,
+.sd-card .sd-card-text {
+  font-size: 0.88rem;
+  color: var(--color-foreground-secondary);
+}
+
+/* sphinx-design plain grid-items: neutralize card aesthetics */
+.sd-d-flex-row > .sd-col > p:first-child,
+.sd-row > .sd-col > p:first-child strong:first-child {
+  /* no-op placeholder */
+}
+
+/* ----- Scrollbar (mac-style) ------------------------------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hesperides-gold);
+  background-clip: padding-box;
+}
+
+/* ----- Selection ----------------------------------------- */
+::selection {
+  background: var(--hesperides-gold-glow);
+  color: var(--color-foreground-primary);
+}
+
+/* =============================================================
+   Cajas pedagógicas estilo apuntes Hespérides
+   .defbox  → definición / teorema (amarilla)
+   .notbox  → lectura de la notación (gris claro)
+   .exbox   → ejemplo intuitivo (gris)
+   Técnica: padding en la caja + título con margen negativo
+   para que el header se extienda hasta los bordes.
+   ============================================================= */
+
+.admonition.defbox,
+div.admonition.defbox,
+.admonition.notbox,
+div.admonition.notbox,
+.admonition.exbox,
+div.admonition.exbox {
+  /* Reset de los defaults de Furo */
+  border: none;
+  border-left: none;
+  border-radius: 10px;
+  box-shadow: none;
+  margin: 1.75rem 0;
+  padding: 1rem 1.15rem 1.05rem;
+  overflow: hidden;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/* Title: extends to the box edges via negative margins, with generous
+   vertical + horizontal padding so the text breathes inside the bar. */
+.admonition.defbox > p.admonition-title,
+.admonition.notbox > p.admonition-title,
+.admonition.exbox > p.admonition-title {
+  margin: -1rem -1.15rem 1.1rem;
+  padding: 0.85rem 1.5rem 0.85rem 1.85rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  text-transform: none;
+  border: none;
+  border-radius: 0;
+  display: block;
+  line-height: 1.4;
+}
+.admonition.defbox > p.admonition-title::before,
+.admonition.notbox > p.admonition-title::before,
+.admonition.exbox > p.admonition-title::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* defbox — amarilla */
+.admonition.defbox,
+div.admonition.defbox {
+  background: var(--hesperides-gold-faint);
+  border: 1.5px solid var(--hesperides-gold) !important;
+}
+.admonition.defbox > p.admonition-title {
+  background: var(--hesperides-gold);
+  color: #1a1300;
+}
+[data-theme="dark"] .admonition.defbox,
+[data-theme="dark"] div.admonition.defbox {
+  background: rgba(255, 205, 0, 0.06);
+  border-color: rgba(255, 205, 0, 0.45) !important;
+}
+[data-theme="dark"] .admonition.defbox > p.admonition-title {
+  background: var(--hesperides-gold);
+  color: #1a1300;
+}
+
+/* notbox — gris claro */
+.admonition.notbox,
+div.admonition.notbox {
+  background: var(--hesperides-lightgray);
+  border: 1.5px solid var(--hesperides-darkgray) !important;
+}
+.admonition.notbox > p.admonition-title {
+  background: var(--hesperides-darkgray);
+  color: var(--hesperides-gold);  /* Hesperides gold for legibility on charcoal */
+}
+[data-theme="dark"] .admonition.notbox,
+[data-theme="dark"] div.admonition.notbox {
+  background: #1a1a1a;
+  border-color: #404040 !important;
+}
+[data-theme="dark"] .admonition.notbox > p.admonition-title {
+  background: #404040;
+  color: var(--hesperides-gold);
+}
+
+/* exbox — gris oscuro */
+.admonition.exbox,
+div.admonition.exbox {
+  background: var(--hesperides-lightgray);
+  border: 1px solid var(--hesperides-darkgray) !important;
+}
+.admonition.exbox > p.admonition-title {
+  background: var(--hesperides-darkgray);
+  color: var(--hesperides-gold);  /* Hesperides gold for legibility on charcoal */
+}
+[data-theme="dark"] .admonition.exbox,
+[data-theme="dark"] div.admonition.exbox {
+  background: #1a1a1a;
+  border-color: #404040 !important;
+}
+[data-theme="dark"] .admonition.exbox > p.admonition-title {
+  background: #404040;
+  color: var(--hesperides-gold);
+}
+
+/* Contenido: márgenes consistentes */
+.admonition.defbox > *:not(.admonition-title),
+.admonition.notbox > *:not(.admonition-title),
+.admonition.exbox > *:not(.admonition-title) {
+  margin-left: 0;
+  margin-right: 0;
+}
+.admonition.defbox > *:not(.admonition-title):last-child,
+.admonition.notbox > *:not(.admonition-title):last-child,
+.admonition.exbox > *:not(.admonition-title):last-child {
+  margin-bottom: 0 !important;
+}
+.admonition.defbox p,
+.admonition.notbox p,
+.admonition.exbox p {
+  margin: 0 0 0.65rem;
+}
+.admonition.defbox ul,
+.admonition.notbox ul,
+.admonition.exbox ul,
+.admonition.defbox ol,
+.admonition.notbox ol,
+.admonition.exbox ol {
+  margin: 0 0 0.65rem;
+  padding-left: 1.4rem;
+}
+.admonition.defbox li,
+.admonition.notbox li,
+.admonition.exbox li {
+  margin: 0.25rem 0;
+}
+
+/* Math displays dentro de las cajas: centrado y aire */
+.admonition.defbox .math-wrapper,
+.admonition.notbox .math-wrapper,
+.admonition.exbox .math-wrapper,
+.admonition.defbox div.math,
+.admonition.notbox div.math,
+.admonition.exbox div.math {
+  margin: 0.9rem 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.admonition.defbox mjx-container[display="true"],
+.admonition.notbox mjx-container[display="true"],
+.admonition.exbox mjx-container[display="true"] {
+  margin: 0 !important;
+  padding: 0.1rem 0;
+}
+
+/* ----- MathJax tweaks ------------------------------------ */
+mjx-container[display="true"] {
+  margin: 1.25rem 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+mjx-container[display="true"]::-webkit-scrollbar {
+  height: 6px;
+}
+mjx-container {
+  font-size: 1em !important;
+}
+mjx-container[display="false"] {
+  padding: 0 0.1em;
+}
+
+/* ----- Mobile -------------------------------------------- */
+@media (max-width: 67em) {
+  body { font-size: 15px; }
+  article h1 { font-size: 1.9rem; }
+  .hesperides-hero { padding-bottom: 2rem; margin-bottom: 2rem; }
+}

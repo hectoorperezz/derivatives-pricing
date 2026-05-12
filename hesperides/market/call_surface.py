@@ -29,22 +29,30 @@ class CallSurface:
             raise ValueError("Strikes must be strictly increasing.")
 
     def vertical_spreads(self) -> NDArray[np.float64]:
-        """Normalized vertical call spreads.
+        r"""Normalized vertical call spreads.
 
-        Q_bar_{i,j} = (C_{i-1,j} - C_{i,j}) / (K_i - K_{i-1}) for i > 0.
-        Returns array of shape (nK - 1, nT).
+        .. math::
+
+            \bar{Q}_{i,j} \;=\; \frac{C_{i-1,j} - C_{i,j}}{K_i - K_{i-1}},
+            \qquad i > 0.
+
+        Returns array of shape :math:`(n_K - 1,\; n_T)`.
         """
         if self.strikes is None:
             raise ValueError("vertical_spreads requires strikes.")
         return -np.diff(self.prices, axis=0) / np.diff(self.strikes)[:, None]
 
     def butterfly_values(self) -> NDArray[np.float64]:
-        """Interior butterfly spread values.
+        r"""Interior butterfly spread values.
 
-        BS_{i,j} = C_{i-1,j}
-                 - (K_{i+1} - K_{i-1})/(K_{i+1} - K_i) * C_{i,j}
-                 + (K_i - K_{i-1})/(K_{i+1} - K_i)   * C_{i+1,j}
-        for i = 1, ..., nK-2. Returns array of shape (nK - 2, nT).
+        .. math::
+
+            \mathrm{BS}_{i,j} \;=\; C_{i-1,j}
+            \,-\, \frac{K_{i+1} - K_{i-1}}{K_{i+1} - K_i}\, C_{i,j}
+            \,+\, \frac{K_{i} - K_{i-1}}{K_{i+1} - K_i}\, C_{i+1,j}
+
+        for :math:`i = 1, \ldots, n_K - 2`.
+        Returns array of shape :math:`(n_K - 2,\; n_T)`.
         """
         if self.strikes is None:
             raise ValueError("butterfly_values requires strikes.")
@@ -59,8 +67,12 @@ class CallSurface:
         )
 
     def calendar_spreads(self) -> NDArray[np.float64]:
-        """Calendar spreads across consecutive expiries.
+        r"""Calendar spreads across consecutive expiries.
 
-        CS_{i,j} = C_{i,j+1} - C_{i,j}. Returns array of shape (nK, nT - 1).
+        .. math::
+
+            \mathrm{CS}_{i,j} \;=\; C_{i,j+1} - C_{i,j}.
+
+        Returns array of shape :math:`(n_K,\; n_T - 1)`.
         """
         return np.diff(self.prices, axis=1)
