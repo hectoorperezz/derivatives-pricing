@@ -1,16 +1,15 @@
-# hesperides/pricers/european_pricer.py
+# hesperides/pricers/option_pricer.py
 
-from hesperides.pricers.base import Pricer
 from hesperides.contracts.base import Option
-from hesperides.market.data import MarketData
 from hesperides.engines.base import Engine
+from hesperides.market.data import MarketData
+from hesperides.pricers.base import Pricer
 
 
-class EuropeanPricer(Pricer):
-    """Orchestrates pricing of European options."""
+class OptionPricer(Pricer):
+    """Orchestrates pricing of option contracts."""
 
-    def __init__(self, contract: Option, model,
-                 market: MarketData, engine: Engine):
+    def __init__(self, contract: Option, model, market: MarketData, engine: Engine):
         self.contract = contract
         self.model = model
         self.market = market

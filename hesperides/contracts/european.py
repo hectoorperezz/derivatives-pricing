@@ -11,7 +11,7 @@ class EuropeanOption(Option):
     """European option contract. Defines payoff at expiry for a vanilla call or put."""
 
     K: float
-    expiry: int
+    expiry: float
     call: bool
 
     def payoff(self, S_T: NDArray[np.float64]) -> NDArray[np.float64]:

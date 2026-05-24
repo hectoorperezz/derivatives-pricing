@@ -22,6 +22,42 @@ Price a European option with the binomial tree
 
    print(f"Price: {price:.4f}")
 
+Price Black--Scholes options
+----------------------------
+
+European options and continuous geometric Asian options are available under
+Black--Scholes with analytical and Monte Carlo engines.
+
+.. code-block:: python
+
+   import hesperides.api as hapi
+
+   european = hapi.get_price_bs_european(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.05,
+       sigma=0.20,
+       call=True,
+       engine="analytical",
+   )
+
+   asian_mc = hapi.get_price_bs_geometric_asian(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.05,
+       sigma=0.20,
+       call=True,
+       engine="mc",
+       n_paths=50_000,
+       n_steps=252,
+       seed=123,
+   )
+
+   print(f"European: {european:.4f}")
+   print(f"Geometric Asian MC: {asian_mc:.4f}")
+
 Detect static arbitrage on a call surface
 -----------------------------------------
 

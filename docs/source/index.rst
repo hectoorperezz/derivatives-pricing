@@ -4,7 +4,7 @@ Hesperides
 .. raw:: html
 
    <div class="hesperides-hero">
-     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.2</span>
+     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.3</span>
      <h1 class="hesperides-title">Hesperides</h1>
      <p class="hesperides-tagline">
        A Python library for <strong>derivatives pricing</strong>.
@@ -25,9 +25,9 @@ Hesperides
 
    import hesperides.api as hapi
 
-   price = hapi.get_price_binomial_european(
-       St=100.0, K=100.0, T=3, R=0.05,
-       u=1.1, d=0.9, call=True,
+   price = hapi.get_price_bs_european(
+       St=100.0, K=100.0, T=1.0, r=0.05,
+       sigma=0.20, call=True,
    )
 
 Explore
@@ -46,7 +46,7 @@ Explore
       :link: guide/quickstart
       :link-type: doc
 
-      Price a European option with the binomial tree in fewer than ten lines.
+      Price European and geometric Asian options under Black--Scholes.
 
    .. grid-item-card:: Architecture
       :link: guide/architecture
@@ -58,7 +58,7 @@ Explore
       :link: guide/theory
       :link-type: doc
 
-      Formulas: CRR binomial pricing and Carr–Madan static no-arbitrage.
+      Formulas: binomial pricing, Carr--Madan no-arbitrage and Black--Scholes.
 
    .. grid-item-card:: Public API
       :link: api/public

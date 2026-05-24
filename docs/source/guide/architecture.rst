@@ -8,10 +8,10 @@ single responsibility; clients should only import :mod:`hesperides.api`.
 
    hesperides/
    ├── api.py            # ← single public surface
-   ├── contracts/        # what is being priced (European, ...)
+   ├── contracts/        # what is being priced (European, Asian, ...)
    ├── market/           # market data (spot, curves, surfaces)
-   ├── models/           # underlying dynamics (Binomial, ...)
-   ├── engines/          # numerical algorithm (BinomialTree, ...)
+   ├── models/           # underlying dynamics (Binomial, Black-Scholes, ...)
+   ├── engines/          # numerical algorithm (tree, analytical, MC, ...)
    └── pricers/          # orchestration: contract + model + market + engine
 
 Layers
@@ -27,7 +27,8 @@ Layers
 
 :py:mod:`hesperides.models`
     Dynamics of the underlying under the pricing measure (Q). For example, the
-    binomial tree receives :math:`u`, :math:`d` and builds the lattice.
+    binomial tree receives :math:`u`, :math:`d`; Black--Scholes receives
+    :math:`\sigma`.
 
 :py:mod:`hesperides.engines`
     Implement the numerical algorithm that walks the model and applies the

@@ -21,8 +21,12 @@ guarantees the absence of arbitrage.
 This page captures only the formulas the library actually executes — the
 no-arbitrage condition, the risk-neutral probabilities and the backward
 induction that powers
-:class:`~hesperides.engines.binomial_engine.BinomialTreeEngine`, plus the
-static-arbitrage diagnostics of Carr–Madan exposed through
+:class:`~hesperides.engines.binomial_engine.BinomialTreeEngine`, the
+Black--Scholes closed forms and Monte Carlo simulation used by
+:class:`~hesperides.engines.bs_analytical_engine.BlackScholesAnalyticalEngine`
+and
+:class:`~hesperides.engines.bs_monte_carlo_engine.BlackScholesMonteCarloEngine`,
+plus the static-arbitrage diagnostics of Carr–Madan exposed through
 :func:`~hesperides.api.compute_static_arbitrage_quantity`. The notation
 follows the course notes.
 
@@ -81,6 +85,153 @@ Binomial model
 The price **does not depend on the real probability** :math:`p`, only on
 :math:`u`, :math:`d` and :math:`R`. Every derivative is replicable and
 :math:`\Q` is unique.
+
+Black--Scholes model
+--------------------
+
+In continuous time, Hesperides uses the Black--Scholes model under the
+risk-neutral measure :math:`\Q`. The market provides the spot and discount
+curve; :class:`~hesperides.models.black_scholes.BlackScholesModel`
+parameterizes the diffusion with the annualized volatility :math:`\sigma`.
+
+.. admonition:: Risk-neutral dynamics
+   :class: defbox
+
+   .. math::
+
+      \dd S_t \;=\; r S_t \dt + \sigma S_t \dW_t^{\Q}.
+
+   Hence, for :math:`Z \sim \normal{0}{1}`,
+
+   .. math::
+
+      S_T \;=\; S_0
+      \exp\!\left(\left(r - \frac{1}{2}\sigma^2\right)T
+      + \sigma \sqrt{T}\, Z\right).
+
+   This exact lognormal transition is used by the Monte Carlo engine; no
+   Euler discretization is needed for European terminal values.
+
+.. admonition:: European Black--Scholes formula
+   :class: defbox
+
+   For :math:`\tau = T`, no dividends and
+
+   .. math::
+
+      d_1 \;=\;
+      \frac{\log(S_0/K) + \left(r + \frac{1}{2}\sigma^2\right)\tau}
+           {\sigma\sqrt{\tau}},
+      \qquad
+      d_2 \;=\; d_1 - \sigma\sqrt{\tau},
+
+   the analytical engine returns
+
+   .. math::
+
+      C_0 \;=\; S_0 N(d_1) - K e^{-r\tau} N(d_2),
+
+   .. math::
+
+      P_0 \;=\; K e^{-r\tau} N(-d_2) - S_0 N(-d_1).
+
+   The discount factor is obtained from
+   :class:`~hesperides.market.curves.FlatDiscountCurve` with
+   ``compounding="continuous"``.
+
+.. admonition:: Geometric Asian average
+   :class: defbox
+
+   The continuous geometric average is
+
+   .. math::
+
+      G_T \;=\;
+      \exp\!\left(\frac{1}{T}\int_0^T \log S_u\,\dd u\right).
+
+   Under Black--Scholes,
+
+   .. math::
+
+      \log G_T \;\sim\;
+      \normal{
+         \log S_0 + \left(r - \frac{1}{2}\sigma^2\right)\frac{T}{2}
+      }{
+         \frac{\sigma^2 T}{3}
+      }.
+
+   Therefore :math:`G_T` is lognormal and admits a closed-form call and put
+   price.
+
+.. admonition:: Geometric Asian closed form
+   :class: defbox
+
+   Let
+
+   .. math::
+
+      m \;=\; \log S_0 + \left(r - \frac{1}{2}\sigma^2\right)\frac{T}{2},
+      \qquad
+      v \;=\; \frac{\sigma^2 T}{3},
+      \qquad
+      \overline{G} \;=\; e^{m + v/2}.
+
+   With
+
+   .. math::
+
+      a_1 \;=\; \frac{m - \log K + v}{\sqrt{v}},
+      \qquad
+      a_2 \;=\; a_1 - \sqrt{v},
+
+   the analytical geometric Asian prices are
+
+   .. math::
+
+      C_0^G \;=\; e^{-rT}\left(\overline{G}N(a_1) - K N(a_2)\right),
+
+   .. math::
+
+      P_0^G \;=\; e^{-rT}\left(KN(-a_2) - \overline{G}N(-a_1)\right).
+
+   Put--call parity becomes
+
+   .. math::
+
+      C_0^G - P_0^G
+      \;=\;
+      e^{-rT}\left(\E^{\Q}[G_T] - K\right).
+
+.. admonition:: Monte Carlo estimator
+   :class: defbox
+
+   For simulated discounted payoffs :math:`Y^{(1)},\ldots,Y^{(N)}`,
+
+   .. math::
+
+      \widehat{\Price{0}}_N
+      \;=\;
+      \frac{1}{N}\sum_{i=1}^N Y^{(i)}.
+
+   The statistical error decreases as :math:`N^{-1/2}`. The implementation
+   uses ``numpy.random.default_rng(seed)`` so repeated calls with the same seed
+   return the same estimator.
+
+.. admonition:: Discrete Asian approximation
+   :class: defbox
+
+   For Monte Carlo pricing of the geometric Asian option, the continuous
+   average is approximated on a uniform grid
+   :math:`0=t_0<t_1<\cdots<t_n=T` by
+
+   .. math::
+
+      G_T^{(n)}
+      \;=\;
+      \exp\!\left(\frac{1}{n}\sum_{k=1}^{n}\log S_{t_k}\right).
+
+   The engine simulates all paths at once with NumPy arrays and computes this
+   average without looping over paths.
 
 Static no-arbitrage on call surfaces
 ------------------------------------

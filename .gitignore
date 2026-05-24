@@ -46,3 +46,7 @@ MANIFEST
 # Environment variables
 .env
 .env.*
+
+# Local course notes / agent instructions
+apuntes/
+AGENTS.md

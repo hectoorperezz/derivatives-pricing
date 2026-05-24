@@ -15,10 +15,10 @@ hesperides.pricers.base
    :undoc-members:
    :show-inheritance:
 
-hesperides.pricers.european_pricer
-----------------------------------
+hesperides.pricers.option_pricer
+--------------------------------
 
-.. automodule:: hesperides.pricers.european_pricer
+.. automodule:: hesperides.pricers.option_pricer
    :members:
    :undoc-members:
    :show-inheritance:

@@ -14,3 +14,11 @@ hesperides.models.binomial
    :members:
    :undoc-members:
    :show-inheritance:
+
+hesperides.models.black_scholes
+-------------------------------
+
+.. automodule:: hesperides.models.black_scholes
+   :members:
+   :undoc-members:
+   :show-inheritance:

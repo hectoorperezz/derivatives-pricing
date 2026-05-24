@@ -22,3 +22,11 @@ hesperides.contracts.european
    :members:
    :undoc-members:
    :show-inheritance:
+
+hesperides.contracts.asian
+--------------------------
+
+.. automodule:: hesperides.contracts.asian
+   :members:
+   :undoc-members:
+   :show-inheritance:

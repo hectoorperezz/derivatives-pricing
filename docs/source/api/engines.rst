@@ -22,3 +22,19 @@ hesperides.engines.binomial_engine
    :members:
    :undoc-members:
    :show-inheritance:
+
+hesperides.engines.bs_analytical_engine
+---------------------------------------
+
+.. automodule:: hesperides.engines.bs_analytical_engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hesperides.engines.bs_monte_carlo_engine
+----------------------------------------
+
+.. automodule:: hesperides.engines.bs_monte_carlo_engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
