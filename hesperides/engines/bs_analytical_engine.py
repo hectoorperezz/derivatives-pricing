@@ -8,6 +8,8 @@ from hesperides.contracts.european import EuropeanOption
 from hesperides.engines.base import Engine
 from hesperides.market.data import MarketData
 from hesperides.models.black_scholes import BlackScholesModel
+from hesperides.utils.black_scholes import d1_d2
+from hesperides.utils.normal import normal_cdf
 
 
 class BlackScholesAnalyticalEngine(Engine):
@@ -39,14 +41,12 @@ class BlackScholesAnalyticalEngine(Engine):
         if T == 0:
             return self._intrinsic_value(S, K, contract.call)
 
-        sqrt_t = math.sqrt(T)
-        d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * sqrt_t)
-        d2 = d1 - sigma * sqrt_t
+        d1, d2 = d1_d2(S, K, T, r, sigma)
         discount = market.curve.discount_factor(T)
 
         if contract.call:
-            return S * _norm_cdf(d1) - K * discount * _norm_cdf(d2)
-        return K * discount * _norm_cdf(-d2) - S * _norm_cdf(-d1)
+            return S * normal_cdf(d1) - K * discount * normal_cdf(d2)
+        return K * discount * normal_cdf(-d2) - S * normal_cdf(-d1)
 
     def _price_geometric_asian(
         self,
@@ -72,8 +72,8 @@ class BlackScholesAnalyticalEngine(Engine):
         discount = market.curve.discount_factor(T)
 
         if contract.call:
-            return discount * (expected_average * _norm_cdf(d1) - K * _norm_cdf(d2))
-        return discount * (K * _norm_cdf(-d2) - expected_average * _norm_cdf(-d1))
+            return discount * (expected_average * normal_cdf(d1) - K * normal_cdf(d2))
+        return discount * (K * normal_cdf(-d2) - expected_average * normal_cdf(-d1))
 
     @staticmethod
     def _validate_market_contract(
@@ -95,7 +95,3 @@ class BlackScholesAnalyticalEngine(Engine):
     @staticmethod
     def _intrinsic_value(S: float, K: float, call: bool) -> float:
         return float(max(S - K, 0.0) if call else max(K - S, 0.0))
-
-
-def _norm_cdf(x: float) -> float:
-    return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))

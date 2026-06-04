@@ -4,6 +4,7 @@ __all__ = [
     "get_price_binomial_european",
     "get_price_bs_european",
     "get_price_bs_geometric_asian",
+    "get_greek_bs_european",
     "compute_static_arbitrage_quantity",
 ]
 
@@ -13,6 +14,8 @@ from hesperides.contracts.asian import GeometricAsianOption
 from hesperides.contracts.european import EuropeanOption
 from hesperides.engines.bs_analytical_engine import BlackScholesAnalyticalEngine
 from hesperides.engines.bs_monte_carlo_engine import BlackScholesMonteCarloEngine
+from hesperides.greeks.analytical import AnalyticalGreeks
+from hesperides.greeks.finite_difference import FiniteDifferenceGreeks
 from hesperides.market.call_surface import CallSurface
 from hesperides.market.curves import FlatDiscountCurve
 from hesperides.market.data import MarketData
@@ -90,6 +93,78 @@ def get_price_bs_geometric_asian(
     return pricer.price()
 
 
+def get_greek_bs_european(
+    St: float,
+    K: float,
+    T: float,
+    r: float,
+    sigma: float,
+    call: bool,
+    greek: str,
+    engine: str = "analytical",
+    greek_engine: str = "analytical",
+    fd_scheme: str = "central",
+    h: float | None = None,
+    n_paths: int | None = None,
+    seed: int | None = None,
+) -> float:
+    """Compute a Greek of a European option under Black-Scholes.
+
+    Args:
+        St: Spot price of the underlying.
+        K: Strike.
+        T: Time to maturity in years.
+        r: Continuously compounded risk-free rate.
+        sigma: Annualized Black-Scholes volatility.
+        call: True for call, False for put.
+        greek: Greek name: ``"delta"``, ``"gamma"``, ``"vega"``, or ``"rho"``.
+        engine: Pricing engine used by finite differences: ``"analytical"``
+            or ``"mc"``.
+        greek_engine: Greek method: ``"analytical"`` or ``"fd"``.
+        fd_scheme: Finite-difference scheme for first-order Greeks.
+        h: Optional additive bump size. If omitted, finite differences use
+            ``1e-4 * St`` for delta/gamma and ``1e-4`` for vega/rho.
+        n_paths: Number of Monte Carlo paths for finite differences over MC.
+        seed: Monte Carlo seed for common random numbers.
+
+    Returns:
+        Requested Greek per unit change in its parameter.
+
+    Raises:
+        ValueError: If inputs or engine selectors violate the API contract.
+    """
+    _validate_greek_request(
+        St=St,
+        K=K,
+        T=T,
+        sigma=sigma,
+        greek=greek,
+        engine=engine,
+        greek_engine=greek_engine,
+        fd_scheme=fd_scheme,
+        h=h,
+        n_paths=n_paths,
+        seed=seed,
+    )
+    contract = EuropeanOption(K=K, expiry=T, call=call)
+    market = MarketData(
+        spot=St,
+        curve=FlatDiscountCurve(R=r, compounding="continuous"),
+    )
+    model = BlackScholesModel(sigma=sigma)
+
+    if greek_engine == "analytical":
+        return AnalyticalGreeks().greek(contract, model, market, greek)
+
+    pricing_engine = _black_scholes_engine(engine, n_paths=n_paths, seed=seed)
+    greek_calculator = FiniteDifferenceGreeks(
+        pricing_engine=pricing_engine,
+        fd_scheme=fd_scheme,
+        h=h,
+    )
+    return greek_calculator.greek(contract, model, market, greek)
+
+
 def compute_static_arbitrage_quantity(
     surface: np.ndarray,
     strikes: np.ndarray | None = None,
@@ -107,6 +182,46 @@ def compute_static_arbitrage_quantity(
         f"Invalid quantity: {quantity!r}. "
         "Expected 'vertical', 'butterfly', or 'calendar'."
     )
+
+
+def _validate_greek_request(
+    St: float,
+    K: float,
+    T: float,
+    sigma: float,
+    greek: str,
+    engine: str,
+    greek_engine: str,
+    fd_scheme: str,
+    h: float | None,
+    n_paths: int | None,
+    seed: int | None,
+) -> None:
+    if greek not in {"delta", "gamma", "vega", "rho"}:
+        raise ValueError("greek must be 'delta', 'gamma', 'vega', or 'rho'.")
+    if engine not in {"analytical", "mc"}:
+        raise ValueError("engine must be 'analytical' or 'mc'.")
+    if greek_engine not in {"analytical", "fd"}:
+        raise ValueError("greek_engine must be 'analytical' or 'fd'.")
+    if St <= 0:
+        raise ValueError("Spot must be positive.")
+    if K <= 0:
+        raise ValueError("Strike must be positive.")
+    if T <= 0:
+        raise ValueError("Time to maturity must be positive.")
+    if sigma <= 0:
+        raise ValueError("Volatility must be positive.")
+    if greek_engine == "analytical":
+        return
+    if fd_scheme not in {"forward", "central"}:
+        raise ValueError("fd_scheme must be 'forward' or 'central'.")
+    if h is not None and h <= 0:
+        raise ValueError("h must be positive.")
+    if engine == "mc":
+        if n_paths is None or n_paths <= 0:
+            raise ValueError("n_paths must be positive when engine='mc'.")
+        if seed is None:
+            raise ValueError("seed is required when engine='mc'.")
 
 
 def _black_scholes_engine(

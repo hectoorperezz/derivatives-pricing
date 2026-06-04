@@ -18,4 +18,5 @@ The rest of the submodules are internal and may change between versions.
    market
    models
    engines
+   greeks
    pricers

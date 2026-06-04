@@ -4,10 +4,10 @@ Hesperides
 .. raw:: html
 
    <div class="hesperides-hero">
-     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.3</span>
+     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.4</span>
      <h1 class="hesperides-title">Hesperides</h1>
      <p class="hesperides-tagline">
-       A Python library for <strong>derivatives pricing</strong>.
+       A Python library for <strong>derivatives pricing and Greeks</strong>.
        Modular architecture, a single stable public surface, and
        vectorized NumPy throughout.
      </p>
@@ -30,6 +30,11 @@ Hesperides
        sigma=0.20, call=True,
    )
 
+   delta = hapi.get_greek_bs_european(
+       St=100.0, K=100.0, T=1.0, r=0.05,
+       sigma=0.20, call=True, greek="delta",
+   )
+
 Explore
 -------
 
@@ -46,19 +51,19 @@ Explore
       :link: guide/quickstart
       :link-type: doc
 
-      Price European and geometric Asian options under Black--Scholes.
+      Price European and geometric Asian options, and compute Greeks.
 
    .. grid-item-card:: Architecture
       :link: guide/architecture
       :link-type: doc
 
-      Five layers — contracts, market, models, engines, pricers — and why.
+      Contracts, market, models, engines, Greeks, pricers — and why.
 
    .. grid-item-card:: Theory
       :link: guide/theory
       :link-type: doc
 
-      Formulas: binomial pricing, Carr--Madan no-arbitrage and Black--Scholes.
+      Formulas: binomial pricing, Black--Scholes, Greeks and no-arbitrage.
 
    .. grid-item-card:: Public API
       :link: api/public

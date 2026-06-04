@@ -12,6 +12,7 @@ single responsibility; clients should only import :mod:`hesperides.api`.
    ├── market/           # market data (spot, curves, surfaces)
    ├── models/           # underlying dynamics (Binomial, Black-Scholes, ...)
    ├── engines/          # numerical algorithm (tree, analytical, MC, ...)
+   ├── greeks/           # sensitivities (analytical, finite differences)
    └── pricers/          # orchestration: contract + model + market + engine
 
 Layers
@@ -33,6 +34,11 @@ Layers
 :py:mod:`hesperides.engines`
     Implement the numerical algorithm that walks the model and applies the
     contract's payoff (tree rollback, MC, PDE integration, ...).
+
+:py:mod:`hesperides.greeks`
+    Compute sensitivities of European Black--Scholes prices. Analytical Greeks
+    use closed-form derivatives; finite-difference Greeks bump inputs and
+    reuse the existing pricing engines.
 
 :py:mod:`hesperides.pricers`
     Glue together the four pieces above and return the price. The only layer

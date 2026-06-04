@@ -139,6 +139,78 @@ parameterizes the diffusion with the annualized volatility :math:`\sigma`.
    :class:`~hesperides.market.curves.FlatDiscountCurve` with
    ``compounding="continuous"``.
 
+.. admonition:: European Black--Scholes Greeks
+   :class: defbox
+
+   With :math:`\varphi` the standard-normal density, the analytical Greeks are
+
+   .. math::
+
+      \Delta_C = N(d_1),
+      \qquad
+      \Delta_P = N(d_1) - 1,
+
+   .. math::
+
+      \Gamma
+      =
+      \frac{\varphi(d_1)}{S_0\sigma\sqrt{T}},
+      \qquad
+      \mathcal{V}
+      =
+      S_0\varphi(d_1)\sqrt{T},
+
+   .. math::
+
+      \rho_C
+      =
+      K T e^{-rT}N(d_2),
+      \qquad
+      \rho_P
+      =
+      -K T e^{-rT}N(-d_2).
+
+   Vega and rho are returned per unit change in :math:`\sigma` and :math:`r`.
+   They are not rescaled to volatility points or basis points.
+
+.. admonition:: Finite-difference Greeks
+   :class: defbox
+
+   For a first-order sensitivity with respect to parameter :math:`x`,
+   Hesperides supports the forward scheme
+
+   .. math::
+
+      \frac{V(x+h)-V(x)}{h},
+
+   and the central scheme
+
+   .. math::
+
+      \frac{V(x+h)-V(x-h)}{2h}.
+
+   Gamma always uses the central second difference
+
+   .. math::
+
+      \frac{V(S_0+h)-2V(S_0)+V(S_0-h)}{h^2}.
+
+   The bumped objects are newly constructed. Spot bumps change
+   :class:`~hesperides.market.data.MarketData`, volatility bumps change
+   :class:`~hesperides.models.black_scholes.BlackScholesModel`, and rate bumps
+   rebuild the flat curve so that both drift and discounting move together.
+   Default bump sizes are additive: :math:`10^{-4}S_0` for delta and gamma,
+   and :math:`10^{-4}` for vega and rho.
+
+.. admonition:: Common random numbers
+   :class: defbox
+
+   When finite differences wrap the Monte Carlo pricer, all bumped repricings
+   reuse the same seed. This couples the paths across :math:`V(x+h)`,
+   :math:`V(x)` and :math:`V(x-h)`, reducing the noise of the price
+   difference. The facade therefore requires ``seed`` whenever
+   ``greek_engine="fd"`` and ``engine="mc"``.
+
 .. admonition:: Geometric Asian average
    :class: defbox
 

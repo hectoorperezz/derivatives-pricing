@@ -58,6 +58,43 @@ Black--Scholes with analytical and Monte Carlo engines.
    print(f"European: {european:.4f}")
    print(f"Geometric Asian MC: {asian_mc:.4f}")
 
+Compute Black--Scholes Greeks
+-----------------------------
+
+European Black--Scholes Greeks are available with closed-form formulas or with
+finite-difference bump-and-reprice. Finite differences can wrap either the
+analytical pricer or the Monte Carlo pricer.
+
+.. code-block:: python
+
+   import hesperides.api as hapi
+
+   delta = hapi.get_greek_bs_european(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.05,
+       sigma=0.20,
+       call=True,
+       greek="delta",
+       greek_engine="analytical",
+   )
+
+   rho_fd = hapi.get_greek_bs_european(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.05,
+       sigma=0.20,
+       call=True,
+       greek="rho",
+       greek_engine="fd",
+       engine="analytical",
+   )
+
+   print(f"Delta: {delta:.4f}")
+   print(f"Rho by finite differences: {rho_fd:.4f}")
+
 Detect static arbitrage on a call surface
 -----------------------------------------
 
