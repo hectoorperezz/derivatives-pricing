@@ -92,10 +92,13 @@ Black--Scholes model
 In continuous time, Hesperides uses the Black--Scholes model under the
 risk-neutral measure :math:`\Q`. The market provides the spot and discount
 curve; :class:`~hesperides.models.black_scholes.BlackScholesModel`
-parameterizes the diffusion with the annualized volatility :math:`\sigma`.
+parameterizes the diffusion with the annualized volatility :math:`\sigma` and
+the continuous yield :math:`q`.
 
 .. admonition:: Risk-neutral dynamics
    :class: defbox
+
+   In the dividend-free case :math:`q=0`,
 
    .. math::
 
@@ -139,10 +142,37 @@ parameterizes the diffusion with the annualized volatility :math:`\sigma`.
    :class:`~hesperides.market.curves.FlatDiscountCurve` with
    ``compounding="continuous"``.
 
+.. admonition:: Cost of carry
+   :class: defbox
+
+   With a continuous yield :math:`q`, the risk-neutral drift becomes
+
+   .. math::
+
+      \dd S_t \;=\; (r-q)S_t\dt + \sigma S_t \dW_t^{\Q}.
+
+   Discounting still uses the risk-free curve, while the spot term receives
+   the yield factor :math:`e^{-qT}`. The European call and put become
+
+   .. math::
+
+      C_0 \;=\; S_0 e^{-qT}N(d_1) - K e^{-rT}N(d_2),
+
+   .. math::
+
+      P_0 \;=\; K e^{-rT}N(-d_2) - S_0 e^{-qT}N(-d_1),
+
+   with :math:`d_1` computed using :math:`r-q` instead of :math:`r`.
+   Hesperides uses this single model for dividend-paying stocks
+   (:math:`q` is the dividend yield), FX options (:math:`q=r_f`,
+   discounting with :math:`r_d`) and futures options (:math:`q=r`, giving
+   zero carry).
+
 .. admonition:: European Black--Scholes Greeks
    :class: defbox
 
-   With :math:`\varphi` the standard-normal density, the analytical Greeks are
+   For the dividend-free facade and with :math:`\varphi` the standard-normal
+   density, the analytical Greeks are
 
    .. math::
 

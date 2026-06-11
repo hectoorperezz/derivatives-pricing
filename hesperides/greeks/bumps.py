@@ -28,7 +28,7 @@ def bump_sigma(model: BlackScholesModel, h: float) -> BlackScholesModel:
     Returns:
         New model with ``sigma + h``.
     """
-    return BlackScholesModel(sigma=model.sigma + h)
+    return BlackScholesModel(sigma=model.sigma + h, q=model.q)
 
 
 def bump_rate(market: MarketData, h: float) -> MarketData:

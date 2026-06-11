@@ -29,7 +29,7 @@ Layers
 :py:mod:`hesperides.models`
     Dynamics of the underlying under the pricing measure (Q). For example, the
     binomial tree receives :math:`u`, :math:`d`; Black--Scholes receives
-    :math:`\sigma`.
+    :math:`\sigma` and the continuous yield :math:`q`.
 
 :py:mod:`hesperides.engines`
     Implement the numerical algorithm that walks the model and applies the

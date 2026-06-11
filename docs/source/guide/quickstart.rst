@@ -58,6 +58,49 @@ Black--Scholes with analytical and Monte Carlo engines.
    print(f"European: {european:.4f}")
    print(f"Geometric Asian MC: {asian_mc:.4f}")
 
+Price cost-of-carry options
+---------------------------
+
+Dividend-paying stocks, FX options and futures options all reuse the same
+Black--Scholes model with a continuous yield ``q``.
+
+.. code-block:: python
+
+   import hesperides.api as hapi
+
+   dividend_call = hapi.get_price_bs_european_dividend(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.05,
+       sigma=0.20,
+       call=True,
+       q=0.02,
+   )
+
+   fx_call = hapi.get_price_fx_option(
+       St=1.10,
+       K=1.05,
+       T=1.0,
+       r_d=0.03,
+       r_f=0.01,
+       sigma=0.18,
+       call=True,
+   )
+
+   future_call = hapi.get_price_future_option(
+       F0=100.0,
+       K=98.0,
+       T=0.75,
+       r=0.04,
+       sigma=0.20,
+       call=True,
+   )
+
+   print(f"Dividend call: {dividend_call:.4f}")
+   print(f"FX call: {fx_call:.4f}")
+   print(f"Future call: {future_call:.4f}")
+
 Compute Black--Scholes Greeks
 -----------------------------
 

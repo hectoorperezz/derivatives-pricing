@@ -3,6 +3,9 @@
 __all__ = [
     "get_price_binomial_european",
     "get_price_bs_european",
+    "get_price_bs_european_dividend",
+    "get_price_fx_option",
+    "get_price_future_option",
     "get_price_bs_geometric_asian",
     "get_greek_bs_european",
     "compute_static_arbitrage_quantity",
@@ -65,6 +68,140 @@ def get_price_bs_european(
     pricing_engine = _black_scholes_engine(engine, n_paths=n_paths, seed=seed)
     pricer = OptionPricer(contract, model, market, pricing_engine)
     return pricer.price()
+
+
+def get_price_bs_european_dividend(
+    St: float,
+    K: float,
+    T: float,
+    r: float,
+    sigma: float,
+    call: bool,
+    q: float = 0.0,
+    engine: str = "analytical",
+    n_paths: int | None = None,
+    seed: int | None = None,
+) -> float:
+    """Price a European option with a continuous dividend yield.
+
+    Args:
+        St: Spot price of the underlying.
+        K: Strike.
+        T: Time to maturity in years.
+        r: Continuously compounded risk-free rate.
+        sigma: Annualized Black-Scholes volatility.
+        call: True for call, False for put.
+        q: Continuous dividend yield.
+        engine: Pricing engine: ``"analytical"`` or ``"mc"``.
+        n_paths: Number of Monte Carlo paths when ``engine="mc"``.
+        seed: Optional Monte Carlo seed.
+
+    Returns:
+        Option price at valuation date.
+    """
+    _validate_cost_of_carry_request(
+        St=St,
+        K=K,
+        T=T,
+        sigma=sigma,
+        engine=engine,
+        n_paths=n_paths,
+    )
+    contract = EuropeanOption(K=K, expiry=T, call=call)
+    market = MarketData(
+        spot=St,
+        curve=FlatDiscountCurve(R=r, compounding="continuous"),
+    )
+    model = BlackScholesModel(sigma=sigma, q=q)
+    pricing_engine = _black_scholes_engine(engine, n_paths=n_paths, seed=seed)
+    pricer = OptionPricer(contract, model, market, pricing_engine)
+    return pricer.price()
+
+
+def get_price_fx_option(
+    St: float,
+    K: float,
+    T: float,
+    r_d: float,
+    r_f: float,
+    sigma: float,
+    call: bool,
+    engine: str = "analytical",
+    n_paths: int | None = None,
+    seed: int | None = None,
+) -> float:
+    """Price a European FX option under Garman-Kohlhagen.
+
+    Args:
+        St: FX spot, quoted as domestic currency per unit of foreign currency.
+        K: Strike in the same quotation convention as ``St``.
+        T: Time to maturity in years.
+        r_d: Continuously compounded domestic risk-free rate.
+        r_f: Continuously compounded foreign risk-free rate.
+        sigma: Annualized FX volatility.
+        call: True for call, False for put.
+        engine: Pricing engine: ``"analytical"`` or ``"mc"``.
+        n_paths: Number of Monte Carlo paths when ``engine="mc"``.
+        seed: Optional Monte Carlo seed.
+
+    Returns:
+        Option price at valuation date in domestic currency.
+    """
+    return get_price_bs_european_dividend(
+        St=St,
+        K=K,
+        T=T,
+        r=r_d,
+        sigma=sigma,
+        call=call,
+        q=r_f,
+        engine=engine,
+        n_paths=n_paths,
+        seed=seed,
+    )
+
+
+def get_price_future_option(
+    F0: float,
+    K: float,
+    T: float,
+    r: float,
+    sigma: float,
+    call: bool,
+    engine: str = "analytical",
+    n_paths: int | None = None,
+    seed: int | None = None,
+) -> float:
+    """Price a European option on a future under Black-76.
+
+    Args:
+        F0: Current future price.
+        K: Strike.
+        T: Time to maturity in years.
+        r: Continuously compounded risk-free rate.
+        sigma: Annualized future volatility.
+        call: True for call, False for put.
+        engine: Pricing engine: ``"analytical"`` or ``"mc"``.
+        n_paths: Number of Monte Carlo paths when ``engine="mc"``.
+        seed: Optional Monte Carlo seed.
+
+    Returns:
+        Option price at valuation date.
+    """
+    if F0 <= 0:
+        raise ValueError("Future price must be positive.")
+    return get_price_bs_european_dividend(
+        St=F0,
+        K=K,
+        T=T,
+        r=r,
+        sigma=sigma,
+        call=call,
+        q=r,
+        engine=engine,
+        n_paths=n_paths,
+        seed=seed,
+    )
 
 
 def get_price_bs_geometric_asian(
@@ -182,6 +319,28 @@ def compute_static_arbitrage_quantity(
         f"Invalid quantity: {quantity!r}. "
         "Expected 'vertical', 'butterfly', or 'calendar'."
     )
+
+
+def _validate_cost_of_carry_request(
+    St: float,
+    K: float,
+    T: float,
+    sigma: float,
+    engine: str,
+    n_paths: int | None,
+) -> None:
+    if engine not in {"analytical", "mc"}:
+        raise ValueError("engine must be 'analytical' or 'mc'.")
+    if St <= 0:
+        raise ValueError("Spot must be positive.")
+    if K <= 0:
+        raise ValueError("Strike must be positive.")
+    if T < 0:
+        raise ValueError("Time to maturity must be non-negative.")
+    if sigma <= 0:
+        raise ValueError("Volatility must be positive.")
+    if engine == "mc" and (n_paths is None or n_paths <= 0):
+        raise ValueError("n_paths must be positive when engine='mc'.")
 
 
 def _validate_greek_request(

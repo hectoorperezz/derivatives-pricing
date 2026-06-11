@@ -41,12 +41,17 @@ class BlackScholesAnalyticalEngine(Engine):
         if T == 0:
             return self._intrinsic_value(S, K, contract.call)
 
-        d1, d2 = d1_d2(S, K, T, r, sigma)
+        d1, d2 = d1_d2(S, K, T, r, sigma, q=model.q)
+        yield_discount = model.yield_discount_factor(T)
         discount = market.curve.discount_factor(T)
+        discounted_spot = S * yield_discount
+        discounted_strike = K * discount
 
         if contract.call:
-            return S * normal_cdf(d1) - K * discount * normal_cdf(d2)
-        return K * discount * normal_cdf(-d2) - S * normal_cdf(-d1)
+            return discounted_spot * normal_cdf(d1) - discounted_strike * normal_cdf(
+                d2
+            )
+        return discounted_strike * normal_cdf(-d2) - discounted_spot * normal_cdf(-d1)
 
     def _price_geometric_asian(
         self,
@@ -63,7 +68,8 @@ class BlackScholesAnalyticalEngine(Engine):
         if T == 0:
             return self._intrinsic_value(S, K, contract.call)
 
-        mean = math.log(S) + (r - 0.5 * sigma**2) * T / 2.0
+        carry = model.cost_of_carry(r)
+        mean = math.log(S) + (carry - 0.5 * sigma**2) * T / 2.0
         variance = sigma**2 * T / 3.0
         std = math.sqrt(variance)
         d1 = (mean - math.log(K) + variance) / std

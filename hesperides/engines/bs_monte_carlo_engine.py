@@ -82,9 +82,10 @@ class BlackScholesMonteCarloEngine(Engine):
         """Simulate terminal spots exactly under Black-Scholes."""
         sigma = model.sigma
         r = market.curve.rate(T)
+        carry = model.cost_of_carry(r)
         rng = np.random.default_rng(self.seed)
         z = rng.standard_normal(self.n_paths)
-        drift = (r - 0.5 * sigma**2) * T
+        drift = (carry - 0.5 * sigma**2) * T
         diffusion = sigma * np.sqrt(T) * z
         return market.spot * np.exp(drift + diffusion)
 
@@ -98,9 +99,10 @@ class BlackScholesMonteCarloEngine(Engine):
         """Simulate exact GBM spots on a uniform grid excluding the initial spot."""
         sigma = model.sigma
         r = market.curve.rate(T)
+        carry = model.cost_of_carry(r)
         dt = T / n_steps
         rng = np.random.default_rng(self.seed)
         z = rng.standard_normal((self.n_paths, n_steps))
-        log_returns = (r - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * z
+        log_returns = (carry - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * z
         log_paths = np.log(market.spot) + np.cumsum(log_returns, axis=1)
         return np.exp(log_paths)

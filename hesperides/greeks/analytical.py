@@ -37,11 +37,11 @@ class AnalyticalGreeks:
         self._validate(contract, model, market)
         d1, d2 = self._d1_d2(contract, model, market)
         if greek == "delta":
-            return self._delta(contract, d1)
+            return self._delta(contract, model, d1)
         if greek == "gamma":
             return self._gamma(contract, model, market, d1)
         if greek == "vega":
-            return self._vega(contract, market, d1)
+            return self._vega(contract, model, market, d1)
         if greek == "rho":
             return self._rho(contract, market, d2)
         raise ValueError("greek must be 'delta', 'gamma', 'vega', or 'rho'.")
@@ -75,13 +75,19 @@ class AnalyticalGreeks:
             T=contract.expiry,
             r=market.curve.rate(contract.expiry),
             sigma=model.sigma,
+            q=model.q,
         )
 
     @staticmethod
-    def _delta(contract: EuropeanOption, d1: float) -> float:
+    def _delta(
+        contract: EuropeanOption,
+        model: BlackScholesModel,
+        d1: float,
+    ) -> float:
+        yield_discount = model.yield_discount_factor(contract.expiry)
         if contract.call:
-            return normal_cdf(d1)
-        return normal_cdf(d1) - 1.0
+            return yield_discount * normal_cdf(d1)
+        return yield_discount * (normal_cdf(d1) - 1.0)
 
     @staticmethod
     def _gamma(
@@ -90,11 +96,24 @@ class AnalyticalGreeks:
         market: MarketData,
         d1: float,
     ) -> float:
-        return normal_pdf(d1) / (market.spot * model.sigma * math.sqrt(contract.expiry))
+        yield_discount = model.yield_discount_factor(contract.expiry)
+        return (
+            yield_discount
+            * normal_pdf(d1)
+            / (market.spot * model.sigma * math.sqrt(contract.expiry))
+        )
 
     @staticmethod
-    def _vega(contract: EuropeanOption, market: MarketData, d1: float) -> float:
-        return market.spot * normal_pdf(d1) * math.sqrt(contract.expiry)
+    def _vega(
+        contract: EuropeanOption,
+        model: BlackScholesModel,
+        market: MarketData,
+        d1: float,
+    ) -> float:
+        yield_discount = model.yield_discount_factor(contract.expiry)
+        return market.spot * yield_discount * normal_pdf(d1) * math.sqrt(
+            contract.expiry
+        )
 
     @staticmethod
     def _rho(contract: EuropeanOption, market: MarketData, d2: float) -> float:
