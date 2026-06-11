@@ -185,6 +185,10 @@ def test_future_zero_rate():
             dict(DIVIDEND_PARAMS, call=True, q=0.02),
         ),
         (
+            hapi.get_price_fx_option,
+            dict(St=1.10, K=1.05, T=1.0, r_d=0.03, r_f=0.01, sigma=0.18, call=True),
+        ),
+        (
             hapi.get_price_future_option,
             dict(FUTURE_PARAMS, call=True),
         ),
