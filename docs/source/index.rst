@@ -4,10 +4,10 @@ Hesperides
 .. raw:: html
 
    <div class="hesperides-hero">
-     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.5</span>
+     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.6</span>
      <h1 class="hesperides-title">Hesperides</h1>
      <p class="hesperides-tagline">
-       A Python library for <strong>derivatives pricing, Greeks and cost of carry</strong>.
+       A Python library for <strong>derivatives pricing, Greeks, cost of carry and PDE methods</strong>.
        Modular architecture, a single stable public surface, and
        vectorized NumPy throughout.
      </p>
@@ -51,7 +51,7 @@ Explore
       :link: guide/quickstart
       :link-type: doc
 
-      Price European, dividend, FX and futures options, and compute Greeks.
+      Price European, dividend, FX, futures and PDE-based options.
 
    .. grid-item-card:: Architecture
       :link: guide/architecture
@@ -63,7 +63,7 @@ Explore
       :link: guide/theory
       :link-type: doc
 
-      Formulas: binomial pricing, Black--Scholes, cost of carry, Greeks and no-arbitrage.
+      Formulas: binomial pricing, Black--Scholes, Greeks, heat equation and no-arbitrage.
 
    .. grid-item-card:: Public API
       :link: api/public

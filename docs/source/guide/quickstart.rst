@@ -101,6 +101,61 @@ Black--Scholes model with a continuous yield ``q``.
    print(f"FX call: {fx_call:.4f}")
    print(f"Future call: {future_call:.4f}")
 
+Solve the heat equation
+-----------------------
+
+The one-dimensional heat equation can be solved directly with explicit or
+implicit finite differences.
+
+.. code-block:: python
+
+   import numpy as np
+   import hesperides.api as hapi
+
+   x_grid, u_T = hapi.solve_heat_equation(
+       initial_condition=lambda x: np.sin(np.pi * x),
+       kappa=0.5,
+       M=1.0,
+       T=0.02,
+       n_x=40,
+       n_t=400,
+       scheme="explicit",
+   )
+
+   print(f"Final value at the midpoint: {u_T[len(u_T) // 2]:.4f}")
+
+Price Black--Scholes through heat
+---------------------------------
+
+European calls and puts can also be priced by transforming Black--Scholes into
+the heat equation and solving the resulting PDE.
+
+.. code-block:: python
+
+   import hesperides.api as hapi
+
+   heat_call = hapi.get_price_bs_european_heat(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.03,
+       sigma=0.20,
+       call=True,
+       scheme="implicit",
+   )
+
+   closed_call = hapi.get_price_bs_european(
+       St=100.0,
+       K=100.0,
+       T=1.0,
+       r=0.03,
+       sigma=0.20,
+       call=True,
+   )
+
+   print(f"Heat PDE: {heat_call:.4f}")
+   print(f"Closed form: {closed_call:.4f}")
+
 Compute Black--Scholes Greeks
 -----------------------------
 

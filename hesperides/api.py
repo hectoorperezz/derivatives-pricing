@@ -7,22 +7,29 @@ __all__ = [
     "get_price_fx_option",
     "get_price_future_option",
     "get_price_bs_geometric_asian",
+    "solve_heat_equation",
+    "get_price_bs_european_heat",
     "get_greek_bs_european",
     "compute_static_arbitrage_quantity",
 ]
+
+import math
 
 import numpy as np
 
 from hesperides.contracts.asian import GeometricAsianOption
 from hesperides.contracts.european import EuropeanOption
+from hesperides.contracts.initial_condition import InitialCondition
 from hesperides.engines.bs_analytical_engine import BlackScholesAnalyticalEngine
 from hesperides.engines.bs_monte_carlo_engine import BlackScholesMonteCarloEngine
+from hesperides.engines.heat_equation_engine import HeatEquationEngine
 from hesperides.greeks.analytical import AnalyticalGreeks
 from hesperides.greeks.finite_difference import FiniteDifferenceGreeks
 from hesperides.market.call_surface import CallSurface
 from hesperides.market.curves import FlatDiscountCurve
 from hesperides.market.data import MarketData
 from hesperides.models.black_scholes import BlackScholesModel
+from hesperides.models.heat_equation import HeatEquationModel
 from hesperides.models.binomial import BinomialModel
 from hesperides.engines.binomial_engine import BinomialTreeEngine
 from hesperides.pricers.option_pricer import OptionPricer
@@ -230,6 +237,132 @@ def get_price_bs_geometric_asian(
     return pricer.price()
 
 
+def solve_heat_equation(
+    initial_condition,
+    kappa: float,
+    M: float,
+    T: float,
+    n_x: int,
+    n_t: int,
+    scheme: str = "explicit",
+    left_boundary=0.0,
+    right_boundary=0.0,
+    boundary_type: str = "dirichlet",
+):
+    """Solve the one-dimensional heat equation by finite differences.
+
+    Args:
+        initial_condition: Callable mapping the spatial grid to initial values.
+        kappa: Diffusion coefficient in ``v_t = kappa * v_xx``.
+        M: Right endpoint of the spatial domain ``[0, M]``.
+        T: Final time.
+        n_x: Number of spatial intervals.
+        n_t: Number of time steps.
+        scheme: Time-stepping scheme: ``"explicit"`` or ``"implicit"``.
+        left_boundary: Left boundary value or slope.
+        right_boundary: Right boundary value or slope.
+        boundary_type: Boundary convention: ``"dirichlet"`` or ``"neumann"``.
+
+    Returns:
+        Tuple ``(x_grid, u_T)`` with the spatial grid and final solution.
+    """
+    _validate_heat_request(
+        initial_condition=initial_condition,
+        kappa=kappa,
+        M=M,
+        T=T,
+        n_x=n_x,
+        n_t=n_t,
+        scheme=scheme,
+        boundary_type=boundary_type,
+    )
+    condition = InitialCondition(initial_condition)
+    model = HeatEquationModel(
+        kappa=kappa,
+        M=M,
+        T=T,
+        left_boundary=left_boundary,
+        right_boundary=right_boundary,
+        boundary_type=boundary_type,
+    )
+    engine = HeatEquationEngine(n_x=n_x, n_t=n_t, scheme=scheme)
+    return engine.solve(condition, model)
+
+
+def get_price_bs_european_heat(
+    St: float,
+    K: float,
+    T: float,
+    r: float,
+    sigma: float,
+    call: bool,
+    n_x: int = 400,
+    n_t: int = 400,
+    scheme: str = "implicit",
+) -> float:
+    """Price a European option through the heat-equation transform.
+
+    Args:
+        St: Spot price of the underlying.
+        K: Strike.
+        T: Time to maturity in years.
+        r: Continuously compounded risk-free rate.
+        sigma: Annualized Black-Scholes volatility.
+        call: True for call, False for put.
+        n_x: Number of heat-equation spatial intervals.
+        n_t: Number of heat-equation time steps.
+        scheme: Heat-equation scheme: ``"explicit"`` or ``"implicit"``.
+
+    Returns:
+        European option price at valuation date.
+    """
+    _validate_black_scholes_heat_request(
+        St=St,
+        K=K,
+        T=T,
+        sigma=sigma,
+        n_x=n_x,
+        n_t=n_t,
+        scheme=scheme,
+    )
+    y_min, y_max, y0 = _black_scholes_heat_domain(
+        St=St,
+        K=K,
+        T=T,
+        r=r,
+        sigma=sigma,
+    )
+    M = y_max - y_min
+    initial_condition = _black_scholes_heat_initial_condition(
+        K=K,
+        sigma=sigma,
+        call=call,
+        y_min=y_min,
+    )
+    left_boundary, right_boundary = _black_scholes_heat_boundaries(
+        K=K,
+        sigma=sigma,
+        call=call,
+        y_min=y_min,
+        y_max=y_max,
+    )
+    z_grid, G_T = solve_heat_equation(
+        initial_condition=initial_condition,
+        kappa=0.5,
+        M=M,
+        T=T,
+        n_x=n_x,
+        n_t=n_t,
+        scheme=scheme,
+        left_boundary=left_boundary,
+        right_boundary=right_boundary,
+        boundary_type="dirichlet",
+    )
+    z0 = y0 - y_min
+    G_value = float(np.interp(z0, z_grid, G_T))
+    return math.exp(-r * T) * G_value
+
+
 def get_greek_bs_european(
     St: float,
     K: float,
@@ -341,6 +474,116 @@ def _validate_cost_of_carry_request(
         raise ValueError("Volatility must be positive.")
     if engine == "mc" and (n_paths is None or n_paths <= 0):
         raise ValueError("n_paths must be positive when engine='mc'.")
+
+
+def _validate_heat_request(
+    initial_condition,
+    kappa: float,
+    M: float,
+    T: float,
+    n_x: int,
+    n_t: int,
+    scheme: str,
+    boundary_type: str,
+) -> None:
+    if not callable(initial_condition):
+        raise ValueError("initial_condition must be callable.")
+    if scheme not in {"explicit", "implicit"}:
+        raise ValueError("scheme must be 'explicit' or 'implicit'.")
+    if boundary_type not in {"dirichlet", "neumann"}:
+        raise ValueError("boundary_type must be 'dirichlet' or 'neumann'.")
+    if kappa <= 0:
+        raise ValueError("kappa must be positive.")
+    if M <= 0:
+        raise ValueError("M must be positive.")
+    if T <= 0:
+        raise ValueError("T must be positive.")
+    if n_x < 1:
+        raise ValueError("n_x must be at least 1.")
+    if n_t < 1:
+        raise ValueError("n_t must be at least 1.")
+
+
+def _validate_black_scholes_heat_request(
+    St: float,
+    K: float,
+    T: float,
+    sigma: float,
+    n_x: int,
+    n_t: int,
+    scheme: str,
+) -> None:
+    if St <= 0:
+        raise ValueError("Spot must be positive.")
+    if K <= 0:
+        raise ValueError("Strike must be positive.")
+    if T <= 0:
+        raise ValueError("Time to maturity must be positive.")
+    if sigma <= 0:
+        raise ValueError("Volatility must be positive.")
+    if n_x < 1:
+        raise ValueError("n_x must be at least 1.")
+    if n_t < 1:
+        raise ValueError("n_t must be at least 1.")
+    if scheme not in {"explicit", "implicit"}:
+        raise ValueError("scheme must be 'explicit' or 'implicit'.")
+
+
+def _black_scholes_heat_domain(
+    St: float,
+    K: float,
+    T: float,
+    r: float,
+    sigma: float,
+) -> tuple[float, float, float]:
+    y0 = (math.log(St) - (0.5 * sigma**2 - r) * T) / sigma
+    y_strike = math.log(K) / sigma
+    margin = 8.0 * math.sqrt(T)
+    y_min = min(y0, y_strike) - margin
+    y_max = max(y0, y_strike) + margin
+    return y_min, y_max, y0
+
+
+def _black_scholes_heat_initial_condition(
+    K: float,
+    sigma: float,
+    call: bool,
+    y_min: float,
+):
+    def initial_condition(z_grid: np.ndarray) -> np.ndarray:
+        y_grid = y_min + z_grid
+        underlying = np.exp(sigma * y_grid)
+        if call:
+            return np.maximum(underlying - K, 0.0)
+        return np.maximum(K - underlying, 0.0)
+
+    return initial_condition
+
+
+def _black_scholes_heat_boundaries(
+    K: float,
+    sigma: float,
+    call: bool,
+    y_min: float,
+    y_max: float,
+):
+    if call:
+
+        def left_boundary(t: float) -> float:
+            return 0.0
+
+        def right_boundary(t: float) -> float:
+            return math.exp(sigma * y_max + 0.5 * sigma**2 * t) - K
+
+    else:
+
+        def left_boundary(t: float) -> float:
+            return K - math.exp(sigma * y_min + 0.5 * sigma**2 * t)
+
+        def right_boundary(t: float) -> float:
+            return 0.0
+
+    return left_boundary, right_boundary
 
 
 def _validate_greek_request(

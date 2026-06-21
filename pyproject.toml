@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hesperides"
-version = "0.5.0"
+version = "0.6.0"
 description = "Library for derivatives pricing"
 readme = "README.md"
 requires-python = "==3.13.*"
-dependencies = ["numpy>=2.0.0"]
+dependencies = ["numpy>=2.0.0", "scipy>=1.15"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.2", "pytest-timeout>=2.2", "build>=1.2"]

@@ -232,6 +232,79 @@ the continuous yield :math:`q`.
    Default bump sizes are additive: :math:`10^{-4}S_0` for delta and gamma,
    and :math:`10^{-4}` for vega and rho.
 
+.. admonition:: Heat equation by finite differences
+   :class: defbox
+
+   Hesperides solves
+
+   .. math::
+
+      v_t = \kappa v_{xx},
+      \qquad x \in [0, M],
+
+   on a uniform grid with :math:`\Delta x = M/n_x`,
+   :math:`\Delta t = T/n_t` and
+
+   .. math::
+
+      r_h = \frac{\kappa \Delta t}{\Delta x^2}.
+
+   The explicit FTCS update is
+
+   .. math::
+
+      u_j^{n+1}
+      =
+      r_h u_{j-1}^n
+      + (1-2r_h)u_j^n
+      + r_h u_{j+1}^n.
+
+   It is stable under the convex-combination condition
+   :math:`r_h \le 1/2`. The implicit BTCS scheme solves the tridiagonal
+   system
+
+   .. math::
+
+      -r_h u_{j-1}^{n+1}
+      + (1+2r_h)u_j^{n+1}
+      - r_h u_{j+1}^{n+1}
+      =
+      u_j^n.
+
+   Dirichlet boundaries fix the endpoint values; Neumann boundaries fix
+   endpoint slopes using one-sided first differences.
+
+.. admonition:: Black--Scholes as a heat equation
+   :class: defbox
+
+   The Black--Scholes PDE for a European payoff can be transformed into
+
+   .. math::
+
+      G_t = \frac{1}{2}G_{yy}.
+
+   The heat initial condition is the payoff written in the transformed
+   coordinate, for example
+
+   .. math::
+
+      G(0,y) = \pos{e^{\sigma y} - K}
+
+   for a call. Hesperides solves this heat equation on a truncated
+   :math:`y`-domain with asymptotic Dirichlet boundaries, interpolates the
+   solution at
+
+   .. math::
+
+      y_0 =
+      \frac{\log(S_0) - \left(\frac{1}{2}\sigma^2-r\right)T}{\sigma},
+
+   and returns
+
+   .. math::
+
+      F(0,S_0) = e^{-rT}G(T,y_0).
+
 .. admonition:: Common random numbers
    :class: defbox
 

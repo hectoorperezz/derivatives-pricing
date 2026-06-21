@@ -30,3 +30,11 @@ hesperides.contracts.asian
    :members:
    :undoc-members:
    :show-inheritance:
+
+hesperides.contracts.initial_condition
+--------------------------------------
+
+.. automodule:: hesperides.contracts.initial_condition
+   :members:
+   :undoc-members:
+   :show-inheritance:

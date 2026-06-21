@@ -22,3 +22,11 @@ hesperides.models.black_scholes
    :members:
    :undoc-members:
    :show-inheritance:
+
+hesperides.models.heat_equation
+-------------------------------
+
+.. automodule:: hesperides.models.heat_equation
+   :members:
+   :undoc-members:
+   :show-inheritance:

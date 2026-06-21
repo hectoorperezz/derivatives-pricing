@@ -38,3 +38,11 @@ hesperides.engines.bs_monte_carlo_engine
    :members:
    :undoc-members:
    :show-inheritance:
+
+hesperides.engines.heat_equation_engine
+---------------------------------------
+
+.. automodule:: hesperides.engines.heat_equation_engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
