@@ -1,4 +1,4 @@
-"""Sphinx configuration for the Hesperides derivatives pricing library."""
+"""Sphinx configuration for the Derivatives Pricing library."""
 
 from __future__ import annotations
 
@@ -11,12 +11,12 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 # -- Project information -----------------------------------------------------
-project = "Hesperides"
+project = "Derivatives Pricing"
 author = "Héctor Pérez Ledesma"
 copyright = f"{datetime.now():%Y}, {author}"
 
 try:
-    release = pkg_version("hesperides")
+    release = pkg_version("derivatives-pricing")
 except PackageNotFoundError:
     release = "0.0.0"
 version = ".".join(release.split(".")[:2])
@@ -86,30 +86,28 @@ html_static_path = ["_static"]
 html_css_files = [
     "https://rsms.me/inter/inter.css",
     "https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@v2.304/css/jetbrains-mono.css",
-    "hesperides.css",
+    "derivatives_pricing.css",
 ]
-html_title = "Hesperides"
-html_short_title = "Hesperides"
+html_title = "Derivatives Pricing"
+html_short_title = "Derivatives Pricing"
 html_show_sphinx = False
 html_show_copyright = True
 pygments_style = "default"
 pygments_dark_style = "github-dark"
 
-# Hesperides palette ----------------------------------------------------------
-# Primary gold of Universidad de las Hespérides, tuned for premium docs.
-HESPERIDES_GOLD = "#FFCD00"
-HESPERIDES_GOLD_HOVER = "#FFD940"
-HESPERIDES_GOLD_DEEP = "#B38F00"
+# Derivatives Pricing palette ------------------------------------------------
+ACCENT_GOLD = "#FFCD00"
+ACCENT_GOLD_HOVER = "#FFD940"
+ACCENT_GOLD_DEEP = "#B38F00"
 
 html_theme_options = {
     "sidebar_hide_name": False,
     "navigation_with_keys": True,
     "top_of_page_buttons": ["view"],
     "light_css_variables": {
-        # brand — the bright Hesperides yellow throughout
-        "color-brand-primary": HESPERIDES_GOLD,
-        "color-brand-content": HESPERIDES_GOLD,
-        "color-brand-visited": HESPERIDES_GOLD,
+        "color-brand-primary": ACCENT_GOLD,
+        "color-brand-content": ACCENT_GOLD,
+        "color-brand-visited": ACCENT_GOLD,
         # surfaces
         "color-background-primary": "#ffffff",
         "color-background-secondary": "#fafafa",
@@ -134,8 +132,8 @@ html_theme_options = {
         # admonitions
         "color-admonition-background": "#fafafa",
         # api
-        "color-api-name": HESPERIDES_GOLD,
-        "color-api-pre-name": HESPERIDES_GOLD,
+        "color-api-name": ACCENT_GOLD,
+        "color-api-pre-name": ACCENT_GOLD,
         # sidebar
         "color-sidebar-link-text--top-level": "#0a0a0a",
         "color-sidebar-background": "#fafafa",
@@ -147,9 +145,9 @@ html_theme_options = {
         "header-height": "3.5rem",
     },
     "dark_css_variables": {
-        "color-brand-primary": HESPERIDES_GOLD,
-        "color-brand-content": HESPERIDES_GOLD,
-        "color-brand-visited": HESPERIDES_GOLD,
+        "color-brand-primary": ACCENT_GOLD,
+        "color-brand-content": ACCENT_GOLD,
+        "color-brand-visited": ACCENT_GOLD,
         "color-background-primary": "#0a0a0a",
         "color-background-secondary": "#111111",
         "color-background-hover": "#1a1a1a",
@@ -161,8 +159,8 @@ html_theme_options = {
         "color-inline-code-background": "#1a1a1a",
         "color-highlighted-background": "rgba(245, 180, 0, 0.18)",
         "color-admonition-background": "#111111",
-        "color-api-name": HESPERIDES_GOLD,
-        "color-api-pre-name": HESPERIDES_GOLD,
+        "color-api-name": ACCENT_GOLD,
+        "color-api-pre-name": ACCENT_GOLD,
         "color-sidebar-link-text--top-level": "#ededed",
         "color-sidebar-background": "#0a0a0a",
         "color-sidebar-background-border": "rgba(255, 255, 255, 0.06)",
@@ -178,7 +176,7 @@ mathjax3_config = {
         "processEscapes": True,
         "tags": "ams",
         "macros": {
-            # Conjuntos y medidas (notación de los apuntes)
+            # Sets and measures
             "R": r"\mathbb{R}",
             "E": r"\mathbb{E}",
             "P": r"\mathbb{P}",

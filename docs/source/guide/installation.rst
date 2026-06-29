@@ -6,6 +6,7 @@ Requirements
 
 - Python **3.13** (declared in ``pyproject.toml`` as ``requires-python = "==3.13.*"``).
 - ``numpy >= 2.0``.
+- ``scipy >= 1.15``.
 
 From a clean environment
 ------------------------
@@ -23,13 +24,13 @@ with the documentation extras:
 Build the wheel
 ---------------
 
-To reproduce the course's submission format:
+To build an installable distribution:
 
 .. code-block:: bash
 
    python -m pip install -U build
    python -m build --wheel
-   pip install dist/hesperides-*.whl
+   pip install dist/derivatives_pricing-*.whl
 
 Build the documentation
 -----------------------

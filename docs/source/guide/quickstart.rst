@@ -1,16 +1,16 @@
 Quickstart
 ==========
 
-All interaction with the library goes through :mod:`hesperides.api`.
+All interaction with the library goes through :mod:`derivatives_pricing.api`.
 
 Price a European option with the binomial tree
 ----------------------------------------------
 
 .. code-block:: python
 
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   price = hapi.get_price_binomial_european(
+   price = pricing.get_price_binomial_european(
        St=100.0,   # spot
        K=100.0,    # strike
        T=3,        # number of tree steps
@@ -30,9 +30,9 @@ Black--Scholes with analytical and Monte Carlo engines.
 
 .. code-block:: python
 
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   european = hapi.get_price_bs_european(
+   european = pricing.get_price_bs_european(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -42,7 +42,7 @@ Black--Scholes with analytical and Monte Carlo engines.
        engine="analytical",
    )
 
-   asian_mc = hapi.get_price_bs_geometric_asian(
+   asian_mc = pricing.get_price_bs_geometric_asian(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -66,9 +66,9 @@ Black--Scholes model with a continuous yield ``q``.
 
 .. code-block:: python
 
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   dividend_call = hapi.get_price_bs_european_dividend(
+   dividend_call = pricing.get_price_bs_european_dividend(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -78,7 +78,7 @@ Black--Scholes model with a continuous yield ``q``.
        q=0.02,
    )
 
-   fx_call = hapi.get_price_fx_option(
+   fx_call = pricing.get_price_fx_option(
        St=1.10,
        K=1.05,
        T=1.0,
@@ -88,7 +88,7 @@ Black--Scholes model with a continuous yield ``q``.
        call=True,
    )
 
-   future_call = hapi.get_price_future_option(
+   future_call = pricing.get_price_future_option(
        F0=100.0,
        K=98.0,
        T=0.75,
@@ -110,9 +110,9 @@ implicit finite differences.
 .. code-block:: python
 
    import numpy as np
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   x_grid, u_T = hapi.solve_heat_equation(
+   x_grid, u_T = pricing.solve_heat_equation(
        initial_condition=lambda x: np.sin(np.pi * x),
        kappa=0.5,
        M=1.0,
@@ -132,9 +132,9 @@ the heat equation and solving the resulting PDE.
 
 .. code-block:: python
 
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   heat_call = hapi.get_price_bs_european_heat(
+   heat_call = pricing.get_price_bs_european_heat(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -144,7 +144,7 @@ the heat equation and solving the resulting PDE.
        scheme="implicit",
    )
 
-   closed_call = hapi.get_price_bs_european(
+   closed_call = pricing.get_price_bs_european(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -165,9 +165,9 @@ analytical pricer or the Monte Carlo pricer.
 
 .. code-block:: python
 
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   delta = hapi.get_greek_bs_european(
+   delta = pricing.get_greek_bs_european(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -178,7 +178,7 @@ analytical pricer or the Monte Carlo pricer.
        greek_engine="analytical",
    )
 
-   rho_fd = hapi.get_greek_bs_european(
+   rho_fd = pricing.get_greek_bs_european(
        St=100.0,
        K=100.0,
        T=1.0,
@@ -202,7 +202,7 @@ spreads, butterflies or calendars):
 .. code-block:: python
 
    import numpy as np
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
    # surface[k, t] = call price with strike k and expiry t
    surface = np.array([
@@ -213,10 +213,10 @@ spreads, butterflies or calendars):
    ])
    strikes = np.array([90.0, 100.0, 110.0, 120.0])
 
-   verticals = hapi.compute_static_arbitrage_quantity(
+   verticals = pricing.compute_static_arbitrage_quantity(
        surface, strikes=strikes, quantity="vertical",
    )
-   butterflies = hapi.compute_static_arbitrage_quantity(
+   butterflies = pricing.compute_static_arbitrage_quantity(
        surface, strikes=strikes, quantity="butterfly",
    )
 

@@ -1,40 +1,40 @@
-hesperides.contracts
-====================
+derivatives_pricing.contracts
+=============================
 
 Definitions of financial instruments being priced (contracts).
 
-.. automodule:: hesperides.contracts
+.. automodule:: derivatives_pricing.contracts
    :members:
    :show-inheritance:
 
-hesperides.contracts.base
--------------------------
+derivatives_pricing.contracts.base
+----------------------------------
 
-.. automodule:: hesperides.contracts.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-hesperides.contracts.european
------------------------------
-
-.. automodule:: hesperides.contracts.european
+.. automodule:: derivatives_pricing.contracts.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-hesperides.contracts.asian
---------------------------
-
-.. automodule:: hesperides.contracts.asian
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-hesperides.contracts.initial_condition
+derivatives_pricing.contracts.european
 --------------------------------------
 
-.. automodule:: hesperides.contracts.initial_condition
+.. automodule:: derivatives_pricing.contracts.european
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+derivatives_pricing.contracts.asian
+-----------------------------------
+
+.. automodule:: derivatives_pricing.contracts.asian
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+derivatives_pricing.contracts.initial_condition
+-----------------------------------------------
+
+.. automodule:: derivatives_pricing.contracts.initial_condition
    :members:
    :undoc-members:
    :show-inheritance:

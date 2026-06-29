@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hesperides"
-version = "0.6.0"
-description = "Library for derivatives pricing"
+name = "derivatives-pricing"
+version = "0.1.0"
+description = "Classical derivatives pricing methods in Python"
 readme = "README.md"
 requires-python = "==3.13.*"
 dependencies = ["numpy>=2.0.0", "scipy>=1.15"]
@@ -22,7 +22,7 @@ docs = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["hesperides*", "public_tests*"]
+include = ["derivatives_pricing*"]
 
 [tool.pytest.ini_options]
 markers = ["regression: regression tests"]

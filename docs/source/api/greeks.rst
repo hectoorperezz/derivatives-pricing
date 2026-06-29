@@ -1,33 +1,33 @@
-hesperides.greeks
-=================
+derivatives_pricing.greeks
+==========================
 
 Greek calculators for closed-form Black--Scholes sensitivities and
 finite-difference bump-and-reprice.
 
-.. automodule:: hesperides.greeks
+.. automodule:: derivatives_pricing.greeks
    :members:
    :show-inheritance:
 
-hesperides.greeks.analytical
-----------------------------
+derivatives_pricing.greeks.analytical
+-------------------------------------
 
-.. automodule:: hesperides.greeks.analytical
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-hesperides.greeks.finite_difference
------------------------------------
-
-.. automodule:: hesperides.greeks.finite_difference
+.. automodule:: derivatives_pricing.greeks.analytical
    :members:
    :undoc-members:
    :show-inheritance:
 
-hesperides.greeks.bumps
------------------------
+derivatives_pricing.greeks.finite_difference
+--------------------------------------------
 
-.. automodule:: hesperides.greeks.bumps
+.. automodule:: derivatives_pricing.greeks.finite_difference
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+derivatives_pricing.greeks.bumps
+--------------------------------
+
+.. automodule:: derivatives_pricing.greeks.bumps
    :members:
    :undoc-members:
    :show-inheritance:

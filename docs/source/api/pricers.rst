@@ -1,24 +1,24 @@
-hesperides.pricers
-==================
+derivatives_pricing.pricers
+===========================
 
 Orchestrators that combine contract + market + model + engine.
 
-.. automodule:: hesperides.pricers
+.. automodule:: derivatives_pricing.pricers
    :members:
    :show-inheritance:
 
-hesperides.pricers.base
------------------------
+derivatives_pricing.pricers.base
+--------------------------------
 
-.. automodule:: hesperides.pricers.base
+.. automodule:: derivatives_pricing.pricers.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-hesperides.pricers.option_pricer
---------------------------------
+derivatives_pricing.pricers.option_pricer
+-----------------------------------------
 
-.. automodule:: hesperides.pricers.option_pricer
+.. automodule:: derivatives_pricing.pricers.option_pricer
    :members:
    :undoc-members:
    :show-inheritance:

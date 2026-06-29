@@ -1,7 +1,7 @@
 API reference
 =============
 
-The library exposes a **single stable public surface** in :mod:`hesperides.api`.
+The library exposes a **single stable public surface** in :mod:`derivatives_pricing.api`.
 The rest of the submodules are internal and may change between versions.
 
 .. toctree::

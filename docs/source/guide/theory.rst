@@ -2,7 +2,7 @@ Mathematical foundations
 ========================
 
 A derivatives pricing library is, at heart, an answer to a single question:
-**what is a fair price for a contingent claim?** The course teaches that this
+**what is a fair price for a contingent claim?** Classical pricing theory says this
 question rests on three pillars — **no-arbitrage**, **replication** and
 **martingale measures** — and that everything else (Black–Scholes, Greeks,
 smile, incomplete markets) is a technical extension of these ideas.
@@ -21,14 +21,13 @@ guarantees the absence of arbitrage.
 This page captures only the formulas the library actually executes — the
 no-arbitrage condition, the risk-neutral probabilities and the backward
 induction that powers
-:class:`~hesperides.engines.binomial_engine.BinomialTreeEngine`, the
+:class:`~derivatives_pricing.engines.binomial_engine.BinomialTreeEngine`, the
 Black--Scholes closed forms and Monte Carlo simulation used by
-:class:`~hesperides.engines.bs_analytical_engine.BlackScholesAnalyticalEngine`
+:class:`~derivatives_pricing.engines.bs_analytical_engine.BlackScholesAnalyticalEngine`
 and
-:class:`~hesperides.engines.bs_monte_carlo_engine.BlackScholesMonteCarloEngine`,
+:class:`~derivatives_pricing.engines.bs_monte_carlo_engine.BlackScholesMonteCarloEngine`,
 plus the static-arbitrage diagnostics of Carr–Madan exposed through
-:func:`~hesperides.api.compute_static_arbitrage_quantity`. The notation
-follows the course notes.
+:func:`~derivatives_pricing.api.compute_static_arbitrage_quantity`.
 
 Notation
 --------
@@ -80,7 +79,7 @@ Binomial model
       \Price{t}\![X] \;=\; \frac{1}{1+R}\, \E^{\Q}\!\left[\Price{t+1}\![X] \,\middle|\, \Filt_t\right].
 
    Iterating for :math:`T` steps yields :math:`\Price{0}\![X]`. This is exactly
-   what :class:`~hesperides.engines.binomial_engine.BinomialTreeEngine` does.
+   what :class:`~derivatives_pricing.engines.binomial_engine.BinomialTreeEngine` does.
 
 The price **does not depend on the real probability** :math:`p`, only on
 :math:`u`, :math:`d` and :math:`R`. Every derivative is replicable and
@@ -89,9 +88,9 @@ The price **does not depend on the real probability** :math:`p`, only on
 Black--Scholes model
 --------------------
 
-In continuous time, Hesperides uses the Black--Scholes model under the
+In continuous time, Derivatives Pricing uses the Black--Scholes model under the
 risk-neutral measure :math:`\Q`. The market provides the spot and discount
-curve; :class:`~hesperides.models.black_scholes.BlackScholesModel`
+curve; :class:`~derivatives_pricing.models.black_scholes.BlackScholesModel`
 parameterizes the diffusion with the annualized volatility :math:`\sigma` and
 the continuous yield :math:`q`.
 
@@ -139,7 +138,7 @@ the continuous yield :math:`q`.
       P_0 \;=\; K e^{-r\tau} N(-d_2) - S_0 N(-d_1).
 
    The discount factor is obtained from
-   :class:`~hesperides.market.curves.FlatDiscountCurve` with
+   :class:`~derivatives_pricing.market.curves.FlatDiscountCurve` with
    ``compounding="continuous"``.
 
 .. admonition:: Cost of carry
@@ -163,7 +162,7 @@ the continuous yield :math:`q`.
       P_0 \;=\; K e^{-rT}N(-d_2) - S_0 e^{-qT}N(-d_1),
 
    with :math:`d_1` computed using :math:`r-q` instead of :math:`r`.
-   Hesperides uses this single model for dividend-paying stocks
+   Derivatives Pricing uses this single model for dividend-paying stocks
    (:math:`q` is the dividend yield), FX options (:math:`q=r_f`,
    discounting with :math:`r_d`) and futures options (:math:`q=r`, giving
    zero carry).
@@ -207,7 +206,7 @@ the continuous yield :math:`q`.
    :class: defbox
 
    For a first-order sensitivity with respect to parameter :math:`x`,
-   Hesperides supports the forward scheme
+   Derivatives Pricing supports the forward scheme
 
    .. math::
 
@@ -226,8 +225,8 @@ the continuous yield :math:`q`.
       \frac{V(S_0+h)-2V(S_0)+V(S_0-h)}{h^2}.
 
    The bumped objects are newly constructed. Spot bumps change
-   :class:`~hesperides.market.data.MarketData`, volatility bumps change
-   :class:`~hesperides.models.black_scholes.BlackScholesModel`, and rate bumps
+   :class:`~derivatives_pricing.market.data.MarketData`, volatility bumps change
+   :class:`~derivatives_pricing.models.black_scholes.BlackScholesModel`, and rate bumps
    rebuild the flat curve so that both drift and discounting move together.
    Default bump sizes are additive: :math:`10^{-4}S_0` for delta and gamma,
    and :math:`10^{-4}` for vega and rho.
@@ -235,7 +234,7 @@ the continuous yield :math:`q`.
 .. admonition:: Heat equation by finite differences
    :class: defbox
 
-   Hesperides solves
+   Derivatives Pricing solves
 
    .. math::
 
@@ -290,7 +289,7 @@ the continuous yield :math:`q`.
 
       G(0,y) = \pos{e^{\sigma y} - K}
 
-   for a call. Hesperides solves this heat equation on a truncated
+   for a call. Derivatives Pricing solves this heat equation on a truncated
    :math:`y`-domain with asymptotic Dirichlet boundaries, interpolates the
    solution at
 
@@ -445,4 +444,4 @@ quantities detect no-arbitrage violations.
       \mathrm{CS}_{i,j} \;=\; C_{i,j+1} - C_{i,j}.
 
 The three quantities are exposed to users through
-:func:`~hesperides.api.compute_static_arbitrage_quantity`.
+:func:`~derivatives_pricing.api.compute_static_arbitrage_quantity`.

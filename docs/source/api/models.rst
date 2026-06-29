@@ -1,32 +1,32 @@
-hesperides.models
-=================
+derivatives_pricing.models
+==========================
 
 Underlying dynamics under the pricing measure (models).
 
-.. automodule:: hesperides.models
+.. automodule:: derivatives_pricing.models
    :members:
    :show-inheritance:
 
-hesperides.models.binomial
---------------------------
+derivatives_pricing.models.binomial
+-----------------------------------
 
-.. automodule:: hesperides.models.binomial
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-hesperides.models.black_scholes
--------------------------------
-
-.. automodule:: hesperides.models.black_scholes
+.. automodule:: derivatives_pricing.models.binomial
    :members:
    :undoc-members:
    :show-inheritance:
 
-hesperides.models.heat_equation
--------------------------------
+derivatives_pricing.models.black_scholes
+----------------------------------------
 
-.. automodule:: hesperides.models.heat_equation
+.. automodule:: derivatives_pricing.models.black_scholes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+derivatives_pricing.models.heat_equation
+----------------------------------------
+
+.. automodule:: derivatives_pricing.models.heat_equation
    :members:
    :undoc-members:
    :show-inheritance:

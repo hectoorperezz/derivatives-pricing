@@ -1,17 +1,17 @@
-Hesperides
-==========
+Derivatives Pricing
+===================
 
 .. raw:: html
 
-   <div class="hesperides-hero">
-     <span class="hesperides-eyebrow"><span class="dot"></span>Universidad de las Hespérides · v0.6</span>
-     <h1 class="hesperides-title">Hesperides</h1>
-     <p class="hesperides-tagline">
+   <div class="derivatives_pricing-hero">
+     <span class="derivatives_pricing-eyebrow"><span class="dot"></span>Classical derivatives pricing methods</span>
+     <h1 class="derivatives_pricing-title">Derivatives Pricing</h1>
+     <p class="derivatives_pricing-tagline">
        A Python library for <strong>derivatives pricing, Greeks, cost of carry and PDE methods</strong>.
        Modular architecture, a single stable public surface, and
        vectorized NumPy throughout.
      </p>
-     <div class="hesperides-cta-row">
+     <div class="derivatives_pricing-cta-row">
        <a class="hero-cta hero-cta--primary" href="guide/quickstart.html">
          Get started &rarr;
        </a>
@@ -23,14 +23,14 @@ Hesperides
 
 .. code-block:: python
 
-   import hesperides.api as hapi
+   import derivatives_pricing.api as pricing
 
-   price = hapi.get_price_bs_european(
+   price = pricing.get_price_bs_european(
        St=100.0, K=100.0, T=1.0, r=0.05,
        sigma=0.20, call=True,
    )
 
-   delta = hapi.get_greek_bs_european(
+   delta = pricing.get_greek_bs_european(
        St=100.0, K=100.0, T=1.0, r=0.05,
        sigma=0.20, call=True, greek="delta",
    )
@@ -69,7 +69,7 @@ Explore
       :link: api/public
       :link-type: doc
 
-      Functions in ``hesperides.api``: the single stable surface.
+      Functions in ``derivatives_pricing.api``: the single stable surface.
 
    .. grid-item-card:: Market & Models
       :link: api/market
@@ -87,7 +87,7 @@ Design principles
 
       **One API**
 
-      All functionality flows through :mod:`hesperides.api`. The rest of the
+      All functionality flows through :mod:`derivatives_pricing.api`. The rest of the
       package is internal and may be refactored without breaking consumers.
 
    .. grid-item::
@@ -108,8 +108,8 @@ Design principles
 
       **Reproducibility**
 
-      Monte Carlo always seeded. Public tests in the repo, private tests for
-      the grade.
+      Monte Carlo always seeded. Regression tests cover pricing formulas,
+      numerical methods and validation paths.
 
 .. toctree::
    :hidden:
